@@ -1,5 +1,10 @@
 # Changelog
 
+## Fixes after release 11
+- Duplicate element ID broke the phone "More" sheet on the People page.
+- Wide content stretched four phone screens sideways (Time and attendance, Benefits, Speak up, People analytics).
+- Offer approvals named the HR officer instead of the candidate in the confirmation message.
+
 ## Release 11: Relations, expenses, benefits and help desk
 Employee relations and conduct (grievances, disciplinary cases, speak-up channel, annual declarations), expenses and cash advances, benefits administration, and the HR help desk with employment letters.
 

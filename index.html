@@ -193,7 +193,7 @@ tbody tr.click:hover td{background:var(--canvas)}
   .band{grid-template-columns:1fr 1fr}
   .band > div:nth-child(3){border-left:0}
   .band > div:nth-child(n+3){border-top:1px solid var(--line)}
-  .grid2{grid-template-columns:1fr}
+  .grid2,.grid2[style]{grid-template-columns:minmax(0,1fr)!important}
   .bar{grid-template-columns:120px minmax(0,1fr) 54px;font-size:14px}
   .form{grid-template-columns:1fr}
   .kv{grid-template-columns:120px 1fr}
@@ -253,7 +253,7 @@ tbody tr.click:hover td{background:var(--canvas)}
 .msg{max-width:78%;padding:10px 14px;border-radius:10px;white-space:pre-wrap;line-height:1.5}
 .msg.me{align-self:flex-end;background:var(--red);color:var(--on-red)}
 .msg.ai{align-self:flex-start;background:var(--canvas)}
-.chatin{display:flex;gap:8px}.chatin input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);min-width:0}
+.chatin{display:flex;gap:8px}.chatin>select{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}.chatin>*{min-width:0}.chatin input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);min-width:0}
 .orgtop{display:flex;justify-content:center;margin-bottom:14px}
 .orggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;border-top:2px solid var(--line);padding-top:14px}
 .org{display:flex;gap:10px;align-items:center;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;width:100%}
@@ -373,7 +373,7 @@ a.btn{color:var(--ink)}a.btn.primary{color:var(--on-red)}
  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
  .mgrid a{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-size:13px;text-align:center}
  .mgrid img{width:24px;height:24px}
- .tgrid,.hgrid{grid-template-columns:1fr}
+ .tgrid,.hgrid{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:640px){
  .tablewrap table:not(.matrix):not(.ts) thead{display:none}
@@ -465,7 +465,7 @@ details > summary{list-style:none;display:inline-flex;cursor:pointer}details > s
 .cand-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:600;cursor:pointer;color:var(--ink)}.chip.on{background:var(--red-tint);border-color:var(--red);color:var(--red-deep)}.chip[disabled]{cursor:default}
 .cbnbox{background:var(--warn-tint);border-radius:8px;padding:10px 12px;margin:8px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}@media (max-width:1100px){.grid3{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}@media (max-width:1100px){.grid3{grid-template-columns:minmax(0,1fr)}}
 .mdask{display:flex;justify-content:space-between;align-items:center;gap:14px;border-left:4px solid var(--red);flex-wrap:wrap}.mdask .t{font-weight:600}.mdask .d{color:var(--muted);font-size:14.5px}
 .hmo{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px;padding:14px 16px;border-radius:10px;background:linear-gradient(135deg,#1D2026,#3a3e45);color:#fff}.hmo .idn{color:rgba(255,255,255,.7)}
 .thread{list-style:none;padding:0;margin:0}.thread li{padding:10px 12px;border-radius:10px;margin:8px 0;background:var(--canvas)}.thread li.me{background:var(--red-tint)}
@@ -865,7 +865,7 @@ VIEWS.people=function(){
   '<div class="tools"><input id="q" type="search" placeholder="Search by name, ID or role" aria-label="Search people">'+
   (mgr?'':'<select id="fd" aria-label="Department"><option value="">All departments</option>'+DEPTS.map(function(d){return '<option value="'+d.code+'">'+esc(d.name)+'</option>';}).join('')+'</select>')+
   '<select id="fs" aria-label="Filter"><option value="">Everyone</option><option value="prob">On probation</option><option value="unver">Checks outstanding</option><option value="block">Block leave outstanding</option></select></div>'+
-  '<div class="tablewrap"><table><thead><tr><th>Name</th><th>Role</th>'+(mgr?'':'<th>Department</th>')+'<th>Location</th><th>Grade</th><th>Status</th><th>Checks</th></tr></thead><tbody id="rows"></tbody></table><div class="more" id="more"></div></div>';
+  '<div class="tablewrap"><table><thead><tr><th>Name</th><th>Role</th>'+(mgr?'':'<th>Department</th>')+'<th>Location</th><th>Grade</th><th>Status</th><th>Checks</th></tr></thead><tbody id="rows"></tbody></table><div class="more" id="pmore"></div></div>';
 };
 function peopleRows(){
   var q=(document.getElementById('q').value||'').toLowerCase(),fd=document.getElementById('fd'),fs=document.getElementById('fs').value;
@@ -879,7 +879,7 @@ function peopleRows(){
   var shown=list.slice(0,60);
   document.getElementById('rows').innerHTML=shown.map(function(e){var v=verifiedCount(e);
     return '<tr class="click" tabindex="0" data-emp="'+e.id+'"><td><div style="font-weight:600">'+esc(full(e))+'</div><div class="idn">'+e.id+'</div></td><td>'+esc(e.title)+'</td>'+(S.role==='manager'?'':'<td>'+esc(dept(e.dept).name)+'</td>')+'<td>'+esc(e.branch)+'</td><td>'+esc(GRADES[e.grade])+'</td><td>'+(onProbation(e)?tag('Probation','warn'):tag('Confirmed','good'))+'</td><td>'+(v===4?tag('4 of 4','good'):tag(v+' of 4','warn'))+'</td></tr>';}).join('')||'<tr><td colspan="7">No one matches. Try a different name or clear the filters.</td></tr>';
-  document.getElementById('more').textContent=list.length>60?'Showing 60 of '+list.length+'. Refine the search to narrow the list.':plural(list.length,'person','people');
+  document.getElementById('pmore').textContent=list.length>60?'Showing 60 of '+list.length+'. Refine the search to narrow the list.':plural(list.length,'person','people');
 }
 
 VIEWS.organisation=function(){
@@ -2892,8 +2892,8 @@ function decide(id,ok){
 /* ---------- binding ---------- */
 function bind(r){bindV2(r);bindP7(r);
   view.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){location.hash=b.getAttribute('data-go');};});
-  view.querySelectorAll('[data-approve]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-approve'),who=(emp((S.requests.find(function(x){return x.id===id;})||{}).empId)||{});act(function(){decide(id,true);},'Approved'+(who.first?' for '+full(who):'')+'.');};});
-  view.querySelectorAll('[data-decline]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-decline'),who=(emp((S.requests.find(function(x){return x.id===id;})||{}).empId)||{});act(function(){decide(id,false);},'Declined'+(who.first?' for '+full(who):'')+'.');};});
+  view.querySelectorAll('[data-approve]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-approve'),rq=S.requests.find(function(x){return x.id===id;})||{},who=emp(rq.empId)||{},cv=rq.kind==='offer'&&S.vacs.find(function(v){return v.id===rq.vacId;}),ca=cv&&cv.apps.find(function(a){return a.id===rq.appId;}),nm=ca?ca.first+' '+ca.last:(who.first?full(who):'');act(function(){decide(id,true);},'Approved'+(nm?' for '+nm:'')+'.');};});
+  view.querySelectorAll('[data-decline]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-decline'),rq=S.requests.find(function(x){return x.id===id;})||{},who=emp(rq.empId)||{},cv=rq.kind==='offer'&&S.vacs.find(function(v){return v.id===rq.vacId;}),ca=cv&&cv.apps.find(function(a){return a.id===rq.appId;}),nm=ca?ca.first+' '+ca.last:(who.first?full(who):'');act(function(){decide(id,false);},'Declined'+(nm?' for '+nm:'')+'.');};});
   if(r==='people'){['q','fd','fs'].forEach(function(id){var el=document.getElementById(id);if(el)el.oninput=peopleRows;});peopleRows();}
   var lf=document.getElementById('lf');
   if(lf){var upd=function(){var a=document.getElementById('la').value,b=document.getElementById('lb').value,d=document.getElementById('ld');
