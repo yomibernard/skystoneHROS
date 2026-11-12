@@ -465,6 +465,8 @@ details > summary{list-style:none;display:inline-flex;cursor:pointer}details > s
 .cand-h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:600;cursor:pointer;color:var(--ink)}.chip.on{background:var(--red-tint);border-color:var(--red);color:var(--red-deep)}.chip[disabled]{cursor:default}
 .cbnbox{background:var(--warn-tint);border-radius:8px;padding:10px 12px;margin:8px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}@media (max-width:1100px){.grid3{grid-template-columns:1fr}}
+.mdask{display:flex;justify-content:space-between;align-items:center;gap:14px;border-left:4px solid var(--red);flex-wrap:wrap}.mdask .t{font-weight:600}.mdask .d{color:var(--muted);font-size:14.5px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -486,6 +488,7 @@ details > summary{list-style:none;display:inline-flex;cursor:pointer}details > s
         <option value="hoh">Head of HR</option>
         <option value="payroll">Payroll officer</option>
         <option value="finance">Finance (CFO)</option>
+        <option value="md">Managing Director</option>
       </select>
       <div class="who" id="who"></div>
       <button class="reset" id="signout" type="button">Sign out</button><br><button class="reset" id="reset" type="button">Reset sample data</button>
@@ -730,7 +733,7 @@ function render(keep){renderNav();renderTopbar();var r=route();view.innerHTML=(V
   if(r==='home'&&S.role!=='finance'){var t0=view.querySelector('.top');if(t0)t0.classList.add('hero');}
   if(r==='engagement')view.insertAdjacentHTML('afterbegin',photoBanner('ph_team','Your voice shapes Skystone','Take the pulse, recognise a colleague, and see what we are doing about it.'));
   if(r==='recruitment')view.insertAdjacentHTML('afterbegin',photoBanner('ph_market','People who serve Nigerian businesses well','Every hire starts from an approved position and ends with a smooth first day.'));
-  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);hohHook(r);recruitHook(r);if(r==='trust')trustDl();if(!keep)window.scrollTo(0,0);}
+  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);hohHook(r);recruitHook(r);mdHook(r);if(r==='trust')trustDl();if(!keep)window.scrollTo(0,0);}
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove('show');},2600);}
 function top(title,sub,extra){return '<div class="top"><div><h1>'+title+'</h1>'+(sub?'<p class="sub">'+sub+'</p>':'')+'</div>'+(extra||'')+'</div>';}
 function tag(text,kind){return '<span class="tag '+(kind||'plain')+'">'+esc(text)+'</span>';}
@@ -743,6 +746,7 @@ var VIEWS={};
 VIEWS.home=function(){
   if(S.role==='finance'||S.role==='payroll')return VIEWS.payroll();
   if(S.role==='hoh')return homeHoH(me());
+  if(S.role==='md')return homeMD(me());
   var m=me();
   if(S.role==='employee')return homeEmployee3(m);
   if(S.role==='manager')return homeManager(m);
@@ -1742,11 +1746,11 @@ function aiContext() {
   const m = me(), es = allEmps(), lp = leaveParts(m);
   const policy = 'Skystone sample HR policies: annual leave 20 days (grades up to Senior Officer), 22 (Assistant Manager and Manager), 25 (Senior Manager, AGM), 30 (DGM and above); designated roles in credit, recoveries, operations, finance and business development take block leave of at least 10 consecutive working days a year; probation is 6 months; mandatory training: AML/CFT due 30 Sep, code of conduct 31 Mar, fraud and whistleblowing 30 Jun, information security 30 Nov, data protection 31 Dec, new joiners within 30 days; overdue mandatory training caps the year-end rating at Meets expectations; leave goes to the line manager; self-service changes are verified by HR; Nigerian payroll: PAYE under the Nigeria Tax Act 2025 (first ₦800,000 a year tax-free, bands up to 25%), pension 8% employee and 10% employer, NHF 2.5% of basic.';
   const mine = `The person asking: ${full(m)}, ${m.title}, ${dept(m.dept).name}, role in system: ${S.role}. Their leave: ${lp.ent - lp.taken - lp.approved - lp.pending} days left of ${lp.ent}. Their overdue training: ${overdueOf(m).map(c => c.name).join(', ') || 'none'}.`;
-  const agg = isHR() || S.role === 'finance' ? ` Workforce facts: ${es.length} staff in post of 250 approved; ${es.filter(onProbation).length} on probation; ${es.filter(e => overdueOf(e).length).length} people with overdue mandatory training; ${allEmps().filter(e => e.today === 'absent').length} absent today; open requests: ${S.requests.filter(r => r.status === 'pending').length}; open exits: ${S.cases.filter(c => c.type === 'exit' && !c.closed).length}; open vacancies: ${S.vacs.filter(v => v.status === 'open').length}.` : '';
+  const agg = isHR() || S.role === 'finance' || S.role === 'md' ? ` Workforce facts: ${es.length} staff in post of 250 approved; ${es.filter(onProbation).length} on probation; ${es.filter(e => overdueOf(e).length).length} people with overdue mandatory training; ${allEmps().filter(e => e.today === 'absent').length} absent today; open requests: ${S.requests.filter(r => r.status === 'pending').length}; open exits: ${S.cases.filter(c => c.type === 'exit' && !c.closed).length}; open vacancies: ${S.vacs.filter(v => v.status === 'open').length}.` : '';
   return policy + ' ' + mine + agg;
 }
 VIEWS.ask = function () {
-  const chips = isHR() || S.role === 'finance' ? ['Summarise today’s workforce risks', 'Who should I chase on training first, and why?', 'Draft a reminder to managers about block leave'] : ['How many leave days do I have left?', 'What happens if my training is overdue?', 'How is my PAYE calculated?'];
+  const chips = isHR() || S.role === 'finance' || S.role === 'md' ? ['Summarise today’s workforce risks', 'Who should I chase on training first, and why?', 'Draft a reminder to managers about block leave'] : ['How many leave days do I have left?', 'What happens if my training is overdue?', 'How is my PAYE calculated?'];
   return top('Ask HR', 'Answers from Skystone’s HR policies and your data. Check anything important with HR.') +
     `<section class="panel chat"><div id="chatlog" class="chatlog" aria-live="polite">${S.chat.map(c => `<div class="msg ${c.r}">${esc(c.t)}</div>`).join('') || `<div class="empty"><img src="${ICON}" alt=""><p>Ask about leave, training, payroll or HR policy.</p></div>`}</div>
     ${SAMPLE ? `<div class="actions" style="margin:12px 0">${chips.map(c => `<button class="btn small" data-chip="${esc(c)}" type="button">${esc(c)}</button>`).join('')}</div><form id="chf" class="chatin"><input id="chq" placeholder="Ask a question" aria-label="Ask a question" autocomplete="off"><button class="btn primary" type="submit">Ask</button></form>` : '<p class="hint">Ask HR needs an AI service, which is switched off in this standalone copy. In production it connects through Skystone’s secure backend.</p>'}
@@ -1895,7 +1899,7 @@ function metricsNow() { var es = allEmps(), tot = 0, dn = 0; es.forEach(function
   return { staff: es.length, vac: DEPTS.reduce(function (a, d) { return a + d.approved; }, 0) - es.length, verified: pct(es.filter(function (e) { return verifiedCount(e) === 4; }).length, es.length), probation: es.filter(onProbation).length, overdue: es.filter(function (e) { return overdueOf(e).length; }).length, trainPct: pct(dn, tot) }; }
 function seedSnap() { var n = metricsNow(), h = S.pay.history[0]; S.snap = { staff: h ? h.totals.n : n.staff - 1, vac: n.vac + 1, verified: n.verified - 4, probation: n.probation + 2, overdue: n.overdue + 9, trainPct: n.trainPct - 6 }; }
 var TRENDS = [[/Staff in post/, 'staff', 0, ''], [/Vacant approved/, 'vac', -1, ''], [/fully verified/, 'verified', 1, ' pts'], [/Staff on probation/, 'probation', 0, ''], [/People with overdue training/, 'overdue', -1, ''], [/Mandatory courses completed/, 'trainPct', 1, ' pts']];
-function decorateDeltas() { if (!(isHR() || S.role === 'finance') || !S.snap) return; var now = metricsNow();
+function decorateDeltas() { if (!(isHR() || S.role === 'finance' || S.role === 'md') || !S.snap) return; var now = metricsNow();
   document.querySelectorAll('#view .band > div').forEach(function (d) { if (d.querySelector('.delta')) return; var k = (d.querySelector('.k') || {}).textContent || '';
     TRENDS.forEach(function (t) { if (!t[0].test(k)) return; var dv = now[t[1]] - S.snap[t[1]], cls = !dv || !t[2] ? 'neutral' : (dv > 0) === (t[2] > 0) ? 'good' : 'bad';
       d.insertAdjacentHTML('beforeend', '<div class="delta ' + cls + '">' + (dv ? (dv > 0 ? '↑ ' : '↓ ') + Math.abs(dv) + t[3] : 'No change') + ' on last month</div>'); }); }); }
@@ -2496,7 +2500,7 @@ function boardPDF() {
   y = sec(y, 'Pay', [['Gross payroll this month', NG(Math.round(t.gross))], ['Total cost of employment this month', NG(Math.round(t.cost))], ['PAYE due to state tax authorities', NG(Math.round(t.tax))], ['Payroll run status', stageLabel().replace(/\.$/, '')]]);
   y = sec(y, 'Compliance and risk', [['Mandatory training completed', pct(dn, tot) + '%'], ['Staff with overdue mandatory training', String(es.filter(function (e) { return overdueOf(e).length; }).length)], ['Open data breaches', String(S.trust ? S.trust.breaches.filter(function (b) { return !b.closed; }).length : 0)], ['Open improvement plans', String(S.pips.filter(function (x) { return x.stage !== 'closed'; }).length)]]);
   y = sec(y, 'Talent and culture', [['Critical roles with a named successor', pct(cov, roles.length) + '%'], ['Critical roles with a ready-now successor', pct(rn, roles.length) + '%'], ['Future leaders pool', String(Object.keys(S.pool || {}).length)], ['Culture drive pledges', (S.drive.base + Object.keys(S.pledges).length) + ' of ' + es.length]]);
-  p.text(40, 790, 'Prepared from Skystone People OS by ' + pdfAscii(full(me())) + ', Head of Human Resources, on ' + fmt(T) + '.', 8.5, { color: G });
+  p.text(40, 790, 'Prepared from Skystone People OS by ' + pdfAscii(full(me())) + ', ' + (S.role === 'md' ? 'Managing Director' : 'Head of Human Resources') + ', on ' + fmt(T) + '.', 8.5, { color: G });
   p.text(40, 803, 'SAMPLE DATA FROM THE PEOPLE OS PROTOTYPE', 8, { bold: true, color: R });
   p.image(PDFB.icon, PDFB.iw, PDFB.ih, 535, 784, 18, 24);
   return p.bytes();
@@ -2613,6 +2617,51 @@ function recruitHook(r) { const q = s => view.querySelector(s), qa = s => view.q
 NAVICON.jobs = 'i_recruit';
 NAVG.employee.forEach(function (g) { if (g[0] === 'Growth') g[1].push(['jobs', 'Internal jobs']); }); NAV.employee.push(['jobs', 'Internal jobs']);
 NAVG.manager.forEach(function (g) { if (g[0] === 'Talent') g[1].splice(1, 0, ['jobs', 'Internal jobs']); }); NAV.manager.push(['jobs', 'Internal jobs']);
+
+
+/* ================= Managing Director view ================= */
+P.md = BASE.emps.filter(function (e) { return e.dept === 'EXO'; })[0].id;
+NAVG.md = [['', [['home', 'Home']]], ['Organisation', [['people', 'People'], ['organisation', 'Organisation'], ['analytics', 'People analytics'], ['planning', 'Workforce planning']]], ['Performance and talent', [['growth', 'Talent and succession'], ['culture', 'Culture']]], ['Assurance', [['payroll', 'Payroll'], ['trust', 'Trust and compliance']]], ['Help', [['ask', 'Ask HR']]]];
+NAV.md = []; NAVG.md.forEach(function (g) { g[1].forEach(function (x) { NAV.md.push(x); }); });
+BNAV.md = [['home', 'Home', 'i_home'], ['people', 'People', 'i_people'], ['analytics', 'Insight', 'i_chart'], ['culture', 'Culture', 'i_stone']];
+PERSONAS.push(['md', 'Managing Director']);
+var BIZ = {}; (function () { var r = mulberry32(6161); BASE.emps.forEach(function (e) { if (!e.managerId) return;
+  if (e.dept === 'CRD' && /Credit Officer|Relationship|Senior Credit|Unit Head/.test(e.title)) { var d = Math.round((25 + r() * 160) * (e.grade / 3)) * 1e6, par = +(1 + r() * 13).toFixed(1); BIZ[e.id] = { kind: 'Lending', disb: d, rev: Math.round(d * 0.11), par: par }; }
+  else if (e.dept === 'BUS') { var d2 = Math.round((15 + r() * 120) * (e.grade / 3)) * 1e6, par2 = +(1 + r() * 9).toFixed(1); BIZ[e.id] = { kind: 'New business', disb: d2, rev: Math.round(d2 * 0.09), par: par2, cust: 5 + Math.floor(r() * 40) }; }
+  else if (e.dept === 'REC') { var c = Math.round((10 + r() * 70)) * 1e6; BIZ[e.id] = { kind: 'Recoveries', coll: c, rev: Math.round(c * 0.2), rate: Math.round(55 + r() * 40) }; } }); })();
+function riskAdj(b) { return b.par != null ? b.rev * (1 - Math.max(0, b.par - 5) / 20) : b.rev; }
+var CULT = {}; (function () { var r = mulberry32(7373); BASE.emps.forEach(function (e) { CULT[e.id] = Math.floor(r() * r() * 9); }); })();
+function cultureScore(e) { return (CULT[e.id] || 0) + S.kudos.filter(function (k) { return k.to === e.id; }).length * 2 + S.stories.filter(function (s) { return s.by === e.id; }).length * 2 + (S.pledges[e.id] ? 1 : 0) + S.feedback.filter(function (f) { return f.to === e.id && f.type === 'Praise'; }).length; }
+function personRow(e, right, sub) { return '<li>' + avHTML(e, 'avatar sm') + '<span><strong>' + esc(full(e)) + '</strong><span class="idn" style="display:block">' + esc(sub || (e.title + ', ' + dept(e.dept).name)) + '</span></span><span class="when">' + right + '</span></li>'; }
+function homeMD(m) {
+  var es = allEmps(), appr = DEPTS.reduce(function (a, d) { return a + d.approved; }, 0), C0 = CALC; CALC = {}; var t = totals(payPop(S.pay.period)); CALC = C0;
+  var cIdx = Math.round((PULSE_BASE.avg[2] + PULSE_BASE.avg[3] + PULSE_BASE.avg[4]) / 15 * 100);
+  var tops = es.filter(function (e) { var f = finalOf(e); return (f ? f.r : e.rating) >= 5; }).sort(function (a, b) { return b.potential - a.potential || b.grade - a.grade; }).slice(0, 8);
+  var rd = es.filter(function (e) { return BIZ[e.id]; }).sort(function (a, b) { return riskAdj(BIZ[b.id]) - riskAdj(BIZ[a.id]); }).slice(0, 8);
+  var cd = es.slice().sort(function (a, b) { return cultureScore(b) - cultureScore(a); }).slice(0, 8);
+  var revTot = es.reduce(function (a, e) { return a + (BIZ[e.id] ? BIZ[e.id].rev : 0); }, 0);
+  var depR = ['CRD', 'BUS', 'REC'].map(function (c) { var de = es.filter(function (e) { return e.dept === c; }); var rv = de.reduce(function (a, e) { return a + (BIZ[e.id] ? BIZ[e.id].rev : 0); }, 0); return [dept(c).name, rv, de.length ? rv / de.length : 0]; });
+  var tot = 0, dn = 0; es.forEach(function (e) { required(e).forEach(function (c) { tot++; if (tstat(e, c).k === 'done') dn++; }); });
+  var rows = DEPTS.map(function (d) { var de = es.filter(function (e) { return e.dept === d.code; }), cost = de.reduce(function (a, e) { return a + sal(e) / 12; }, 0), tr = 0, td = 0; de.forEach(function (e) { required(e).forEach(function (c) { tr++; if (tstat(e, c).k === 'done') td++; }); });
+    var avg = de.reduce(function (a, e) { return a + e.rating; }, 0) / (de.length || 1), ov = de.filter(function (e) { return overdueOf(e).length; }).length;
+    return '<tr><td style="font-weight:600">' + esc(d.name) + '</td><td class="num">' + de.length + ' / ' + d.approved + '</td><td class="num">' + ngnM(cost) + '</td><td class="num">' + avg.toFixed(1) + '</td><td class="num">' + (pct(td, tr) >= 90 ? tag(pct(td, tr) + '%', 'good') : pct(td, tr) >= 70 ? tag(pct(td, tr) + '%', 'warn') : tag(pct(td, tr) + '%', 'bad')) + '</td><td>' + (ov > 5 ? tag(ov + ' overdue on training', 'bad') : d.approved - de.length > 2 ? tag((d.approved - de.length) + ' vacancies', 'warn') : '') + '</td></tr>'; }).join('');
+  var rk = hohRisks().filter(function (x) { return x[1] !== 'good'; });
+  var act = (S.audit || []).slice(-8).reverse();
+  var hohAcc = S.trust && S.trust.review.items.find(function (x) { return x.empId === P.hoh && !x.decision; });
+  var roles = critRoles(), cov = roles.filter(function (h) { return ((S.succ || {})[h.id] || { succ: [] }).succ.length; }).length;
+  return top(greet() + ', ' + esc(m.first), 'Everything happening across Skystone’s people today, ' + fmt(T) + '.') +
+   '<section class="band" aria-label="Organisation measures"><div><div class="v">' + es.length + ' <small>of ' + appr + '</small></div><div class="k">Staff in post against plan</div></div><div><div class="v">' + ngnM(t.cost) + '</div><div class="k">People cost this month</div></div><div><div class="v">' + turnover12().toFixed(1) + '%</div><div class="k">Staff turnover, 12 months</div></div><div><div class="v">' + cIdx + '</div><div class="k">Culture index (pulse)</div></div></section>' +
+   (hohAcc ? '<section class="panel section mdask"><div><div class="t">One decision for you</div><div class="d">The Head of HR’s own system access is in the Q4 access review, and only you can confirm it.</div></div><div class="actions"><button class="btn small primary" data-mdacc="Keep" type="button">Keep access</button><button class="btn small" data-mdacc="Revoke" type="button">Revoke</button></div></section>' : '') +
+   '<div class="grid3 section"><section class="panel"><h2>Top performers</h2><p class="sub" style="margin:0 0 8px">Rated Outstanding, ordered by potential.</p><ul class="act">' + tops.map(function (e) { return personRow(e, (S.pool && S.pool[e.id] ? tag('Future leader', 'good') : tag(['', 'Low', 'Moderate', 'High'][e.potential] + ' potential', 'plain'))); }).join('') + '</ul></section>' +
+   '<section class="panel"><h2>Revenue drivers</h2><p class="sub" style="margin:0 0 8px">Revenue contribution this year, adjusted for portfolio risk.</p><ul class="act">' + rd.map(function (e) { var b = BIZ[e.id]; return personRow(e, '<strong>' + ngnM(riskAdj(b)) + '</strong>' + (b.par > 8 ? '<br>' + tag('PAR ' + b.par + '%', 'bad') : ''), e.title + (b.kind === 'Recoveries' ? ', ' + ngnM(b.coll) + ' recovered' : ', ' + ngnM(b.disb) + ' disbursed')); }).join('') + '</ul><p class="hint">Sample figures. In production these come from the loan system (BRD PM-03). Volume with high portfolio at risk is penalised, so bad lending is never rewarded.</p></section>' +
+   '<section class="panel"><h2>Culture drivers</h2><p class="sub" style="margin:0 0 8px">Recognition received, stories shared, pledges and praise.</p><ul class="act">' + cd.map(function (e) { return personRow(e, '<strong>' + cultureScore(e) + '</strong> pts'); }).join('') + '</ul><p class="hint">Points: recognition 2, story 2, praise 1, pledge 1, plus earlier recognitions (sample).</p></section></div>' +
+   '<div class="grid2"><section class="panel"><h2>Revenue by business line</h2><div class="bars">' + depR.map(function (x) { return '<div class="bar"><span>' + esc(x[0]) + '</span><span class="track"><i style="width:' + pct(x[1], revTot) + '%"></i></span><span class="n">' + ngnM(x[1]) + '</span></div>'; }).join('') + '</div><p class="hint" style="margin-top:10px">Revenue per head: ' + depR.map(function (x) { return x[0] + ' ' + ngnM(x[2]); }).join('; ') + '. Sample data.</p></section>' +
+   '<section class="panel"><h2>Risks to watch</h2><ul class="rag">' + rk.map(function (x) { return '<li class="' + x[1] + '"><span class="ragdot"></span><div><div class="t">' + esc(x[0]) + '</div><div class="d">' + esc(x[2]) + '</div></div></li>'; }).join('') + '<li class="' + (pct(cov, roles.length) >= 80 ? 'good' : 'warn') + '"><span class="ragdot"></span><div><div class="t">Leadership succession</div><div class="d">' + pct(cov, roles.length) + '% of critical roles have a named successor (target 80%).</div></div></li></ul></section></div>' +
+   '<section class="panel section"><h2>Departments at a glance</h2><div class="tablewrap" style="border:0"><table><thead><tr><th>Department</th><th class="num">Staff / plan</th><th class="num">Monthly pay</th><th class="num">Average rating</th><th class="num">Training done</th><th>Flag</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>' +
+   '<div class="grid2"><section class="panel"><h2>What’s happening</h2><ul class="act">' + act.map(function (x) { return '<li><img class="ic-img" src="' + IMG.i_clipboard + '" alt=""><span>' + esc(x.text) + (x.actor && x.actor !== 'system' && emp(x.actor) ? '<span class="idn" style="display:block">' + esc(full(emp(x.actor))) + '</span>' : '') + '</span><span class="when">' + fmt(x.at.slice(0, 10)) + '</span></li>'; }).join('') + '</ul></section>' +
+   '<section class="panel"><h2>Board pack</h2><p class="sub" style="margin:0 0 12px">The one-page people summary for the Board, from live People OS data.</p><button class="btn primary" id="boardpdf" type="button">Download board summary (PDF)</button><p class="hint section">Training ' + pct(dn, tot) + '% complete; payroll ' + stageLabel().toLowerCase().replace(/\.$/, '') + '.</p></section></div>';
+}
+function mdHook(r) { if (r !== 'home' || S.role !== 'md') return; view.querySelectorAll('[data-mdacc]').forEach(function (b) { b.onclick = function () { var x = S.trust.review.items.find(function (i) { return i.empId === P.hoh; }); x.decision = b.dataset.mdacc; x.by = P.md; x.at = T; addHistory(P.hoh, 'Access review: ' + x.access + ' ' + (x.decision === 'Keep' ? 'confirmed' : 'revoked') + ' by the Managing Director.'); save(); render(true); toast('Recorded.'); }; }); }
 
 /* ---------- decisions ---------- */
 function decide(id,ok){

@@ -19,6 +19,7 @@ On the sign-in screen, choose who to sign in as:
 | Zainab Agbaje | Payroll officer | Payroll inputs and runs only |
 | Ibrahim Musa | Head of HR | Leadership view, approvals, board summary |
 | Olumide Ajayi | Finance (CFO) | Payroll release, pay review, workforce cost |
+| Efe Ojo | Managing Director | Organisation cockpit: top performers, revenue drivers, culture drivers, department scorecards, risks, live activity, board pack |
 
 "Reset sample data" in the sidebar restores the starting position.
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## Release 10: Managing Director view
+Organisation cockpit for the MD: headline measures, top performers, risk-adjusted revenue drivers (sample loan-system data), culture drivers, revenue by business line, risks, department scorecard, live activity, board pack, and the MD's access-review decision for the Head of HR.
+
 ## Release 9: Recruitment and selection
 Structured panel interviews with blind scorecards, assessments, offer letters (PDF) with Head of HR approval and e-signature, CBN prior-approval hold, talent pool, internal jobs board, recruitment analytics.
 
