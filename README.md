@@ -17,9 +17,9 @@ On the sign-in screen, choose who to sign in as:
 | Tunde Bakare | Line manager | Team approvals, appraisals, recruitment for the team |
 | Folake Adeyemi | HR officer | Records, onboarding and exits, verification, recruitment |
 | Zainab Agbaje | Payroll officer | Payroll inputs and runs only |
-| Ibrahim Musa | Head of HR | Leadership view, approvals, board summary |
-| Olumide Ajayi | Finance (CFO) | Payroll release, pay review, workforce cost |
-| Efe Ojo | Managing Director | Organisation cockpit: top performers, revenue drivers, culture drivers, department scorecards, risks, live activity, board pack |
+| Doyin Elegbe | Head of HR | Leadership view, approvals, board summary |
+| Yusuf Shoetan | Finance (CFO) | Payroll release, pay review, workforce cost |
+| Ola Olabinjo | Managing Director | Organisation cockpit: top performers, revenue drivers, culture drivers, department scorecards, risks, live activity, board pack |
 
 "Reset sample data" in the sidebar restores the starting position.
 

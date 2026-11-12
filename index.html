@@ -588,7 +588,7 @@ function build(){
   Object.assign(crd[0],{first:'Tunde',last:'Bakare',gender:'M',start:'2015-03-02'});
   Object.assign(crd[1],{first:'Adaeze',last:'Nwosu',gender:'F',start:'2023-02-13',taken:6,blockDone:false,nin:true,guarantor:true,certs:true,refs:false});
   var hr=emps.filter(function(e){return e.dept==='HRM';});
-  Object.assign(hr[0],{first:'Ibrahim',last:'Musa',gender:'M',start:'2017-09-04'});
+  Object.assign(hr[0],{first:'Doyin',last:'Elegbe',start:'2017-09-04'});
   Object.assign(hr[1],{first:'Folake',last:'Adeyemi',gender:'F',start:'2019-06-17'});
   var exo=emps.filter(function(e){return e.dept==='EXO';})[0];
   DEPTS.forEach(function(d){var h=emps.filter(function(e){return e.dept===d.code;})[0];if(h&&d.code!=='EXO')h.managerId=exo.id;});
@@ -1203,8 +1203,8 @@ const P2 = { finance: null };
   });
   const exo = BASE.emps.filter(e => e.dept === 'EXO');
   P.finance = exo[2].id; P2.finance = exo[2].id;
-  Object.assign(exo[2], { first: 'Olumide', last: 'Ajayi', gender: 'M' });
-  exo[2].email = 'olumide.ajayi@skystone-finance.com';
+  Object.assign(exo[2], { first: 'Yusuf', last: 'Shoetan' });
+  exo[2].email = 'yusuf.shoetan@skystone-finance.com';
   const ad = BASE.emps.filter(e => e.id === P.employee)[0];
   Object.assign(ad, { rating: 4, potential: 3, selfDone: false, mgrDone: false, handbook: false, clockIn: 8 * 60 + 12 });
 })();
@@ -2621,6 +2621,7 @@ NAVG.manager.forEach(function (g) { if (g[0] === 'Talent') g[1].splice(1, 0, ['j
 
 /* ================= Managing Director view ================= */
 P.md = BASE.emps.filter(function (e) { return e.dept === 'EXO'; })[0].id;
+Object.assign(emp(P.md) && BASE.emps.filter(function (e) { return e.id === P.md; })[0], { first: 'Ola', last: 'Olabinjo', email: 'ola.olabinjo@skystone-finance.com' });
 NAVG.md = [['', [['home', 'Home']]], ['Organisation', [['people', 'People'], ['organisation', 'Organisation'], ['analytics', 'People analytics'], ['planning', 'Workforce planning']]], ['Performance and talent', [['growth', 'Talent and succession'], ['culture', 'Culture']]], ['Assurance', [['payroll', 'Payroll'], ['trust', 'Trust and compliance']]], ['Help', [['ask', 'Ask HR']]]];
 NAV.md = []; NAVG.md.forEach(function (g) { g[1].forEach(function (x) { NAV.md.push(x); }); });
 BNAV.md = [['home', 'Home', 'i_home'], ['people', 'People', 'i_people'], ['analytics', 'Insight', 'i_chart'], ['culture', 'Culture', 'i_stone']];
