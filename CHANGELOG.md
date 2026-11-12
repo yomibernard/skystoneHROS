@@ -1,5 +1,8 @@
 # Changelog
 
+## Release 11: Relations, expenses, benefits and help desk
+Employee relations and conduct (grievances, disciplinary cases, speak-up channel, annual declarations), expenses and cash advances, benefits administration, and the HR help desk with employment letters.
+
 ## Release 10: Managing Director view
 Organisation cockpit for the MD: headline measures, top performers, risk-adjusted revenue drivers (sample loan-system data), culture drivers, revenue by business line, risks, department scorecard, live activity, board pack, and the MD's access-review decision for the Head of HR.
 

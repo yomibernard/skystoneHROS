@@ -38,6 +38,10 @@ On the sign-in screen, choose who to sign in as:
 | Engagement and culture | Pulse surveys, eNPS, recognition, culture drives, values, stories |
 | Compensation and planning | Salary bands, pay review modelling, pay equity, workforce scenarios including bank conversion |
 | Analytics | Turnover, headcount, exit reasons, length of service, board summary PDF |
+| Employee relations | Grievances and disciplinary cases with a fair-process checklist, MD approval of dismissals and appeals, anonymous speak-up channel to Compliance and Internal Audit, annual conflict and gifts declarations |
+| Expenses and advances | Claims with receipts, per diem caps by grade, duplicate and weekend checks, manager then Finance approval, cash advances with retirement and payroll recovery |
+| Benefits | Health insurance plan and hospital, dependants with verification, group life cover and beneficiaries, voluntary pension contributions, insurer schedules |
+| HR help desk | Cases with response targets, owners, threads, satisfaction ratings, and employment confirmation letters (PDF) |
 | Trust and compliance | Hash-chained tamper-evident audit trail, access reviews, separation-of-duties report, data subject requests, 72-hour breach register, retention schedule, record of processing, CBN cybersecurity checklist |
 
 ## Repository layout
