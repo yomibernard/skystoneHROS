@@ -1,0 +1,28 @@
+ID,Area,Role,Test,Expected result,Result,Evidence
+T01,All,All five,Open every screen as every role,Every screen loads with no script errors,Pass,53 screens opened; 0 errors
+T02,Leave,Employee,Request 21 to 31 Dec 2026,8 working days: Christmas Day excluded; Boxing Day falls on a Saturday,Pass,"8 working days, excluding Christmas Day and Boxing Day."
+T03,Leave,Employee,Submit the request,Request goes to the line manager,Pass,Sent to Tunde Bakare for approval.
+T04,Leave,Employee,Request 3 days of block leave,Refused: block leave needs at least 10 working days,Pass,Block leave must cover at least 10 consecutive working days.
+T05,Leave,Line manager,Approve the request,Employee sees it approved; balance updates,Pass,Approved status shown to employee
+T06,Self-service,"Employee, HR officer",Request a phone number change,Change waits for HR verification before reaching the record,Pass,Appears in HR approvals
+T07,Core HR,"HR officer, Head of HR",Record a promotion as HR officer,Only the Head of HR can approve it; the officer cannot approve their own change,Pass,HR officer can approve: False; Head of HR can approve: True
+T08,Onboarding,HR officer,Grant system access before guarantor is verified,Blocked until contract signed and guarantor verified,Pass,Access checkbox disabled with reason shown
+T09,Exit,Head of HR,Release final settlement with tasks open,"Locked until every clearance task, including the staff loan, is done",Pass,Button disabled
+T10,Exit,HR officer,Look for the release button as HR officer,Only the Head of HR can release a final settlement,Pass,No release button for HR officer
+T11,HR automation,HR officer,Run rules with a leaver past their last day,Access is revoked automatically and the red flag clears,Pass,Flag cleared
+T12,Training,Employee,"Fail, then pass, the data protection check",Fail is refused; a pass records the date and score,Pass,You answered 0 of 3 correctly. Review the lessons and try again. Then passed and recorded.
+T13,Training,"Employee, manager, HR",Request a programme place,"Manager supports first, then HR approves against budget",Pass,HR could act before manager: False; after: True
+T14,Recruitment,"Manager, Head of HR, Finance",Raise a requisition,"Head of HR approves first, then Finance confirms budget",Pass,Finance saw it only after Head of HR approval
+T15,Recruitment,"HR officer, Head of HR","Prepare, approve, send and sign an offer, then hire",Offer approved by the Head of HR; signed offer creates the employee record and onboarding,Pass,Record SKF-0237 created and onboarding started.
+T15a,Recruitment,HR officer,Try to send an offer for a role needing CBN prior approval,Offer held until the CBN approval is recorded,Pass,Held before approval: True; released after: True
+T16,Payroll,"Payroll officer, Head of HR, Finance",Run the November payroll,Only the payroll officer prepares; blocked until inputs approved and exceptions reviewed; then review and release by two other people,Pass,Blocked before checks: True; out-of-turn actions: False; released: True
+T17,Payroll,Employee,Check PAYE on a payslip by hand,"Matches Nigeria Tax Act 2025 bands after pension, NHF and rent relief; pension is 8% of basic, housing and transport",Pass,"Chargeable 3,288,360; PAYE shown 31,825; recalculated 31,825"
+T18,Performance,Line manager,Rate someone with overdue training as Outstanding on every objective,Overall rating capped at Meets expectations,Pass,Review submitted: Meets expectations.
+T19,Documents,Employee,"Sign with a wrong name, then the right one",Wrong name refused; signature recorded in the audit history,Pass,Type your name exactly as it appears on your record: Adaeze Nwosu.
+T20,Engagement,Employee,"Submit the pulse survey, then return",Answers recorded anonymously; survey cannot be taken twice,Pass,Form no longer offered
+T21,Time and attendance,Employee,"Clock in, then out",Hours recorded for today,Pass,Day complete shown
+T22,Platform,Employee,Reload the page,Earlier requests are still there,Pass,Saved in this browser only
+T23,Platform,HR officer,Open on a 390-pixel phone screen,No sideways scrolling of the page,Pass,Page width 390px
+T24,AI,Any,Ask HR a question,Answer drawn from policy and own data,Manual,Not testable outside Claude: test by hand in the app
+T25,Integrations,HR officer,"Connect Teams, identity, ledger, NIBSS",Live connections,Not in scope,Simulated in the prototype; for the production build
+T26,All,All,Script errors during the whole test run,None,Pass,0 errors
