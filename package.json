@@ -1,0 +1,8 @@
+{
+  "name": "skystone-people-os",
+  "private": true,
+  "description": "Skystone People OS web app for desktop and mobile browsers.",
+  "scripts": {
+    "start": "node --experimental-sqlite server.js"
+  }
+}

@@ -15,8 +15,8 @@ On the sign-in screen, choose who to sign in as:
 |---|---|---|
 | Adaeze Nwosu | Employee | Personal home, payslips, leave, learning, career, culture |
 | Tunde Bakare | Line manager | Team approvals, appraisals, recruitment for the team |
-| Folake Adeyemi | HR officer | Records, onboarding and exits, verification, recruitment |
-| Zainab Agbaje | Payroll officer | Payroll inputs and runs only |
+| Oluwatimilehin Ade-odunta | Talent manager (HR officer) | Records, onboarding and exits, verification, recruitment |
+| Oyin Elegbe | Payroll officer | Payroll inputs and runs only |
 | Doyin Elegbe | Head of HR | Leadership view, approvals, board summary |
 | Yusuf Shoetan | Finance (CFO) | Payroll release, pay review, workforce cost |
 | Ola Olabinjo | Managing Director | Organisation cockpit: top performers, revenue drivers, culture drivers, department scorecards, risks, live activity, board pack |
