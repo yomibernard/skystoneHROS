@@ -471,6 +471,22 @@ details > summary{list-style:none;display:inline-flex;cursor:pointer}details > s
 .thread{list-style:none;padding:0;margin:0}.thread li{padding:10px 12px;border-radius:10px;margin:8px 0;background:var(--canvas)}.thread li.me{background:var(--red-tint)}
 .wbp{border-top:4px solid #1D2026}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bday{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin:0 0 16px}
+.bday h2{margin:0 0 4px;font-size:16px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 16px}
+.stepc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stepc .n{display:inline-flex;width:22px;height:22px;border-radius:999px;background:var(--red);color:#fff;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-right:6px}
+.rtebar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.rte{min-height:140px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff}
+.rte:empty:before{content:attr(data-ph);color:var(--muted)}
+.letter{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px 24px}
+.letterhead{display:flex;gap:14px;align-items:center;border-bottom:3px solid var(--red);padding-bottom:12px;margin-bottom:14px}
+.letterhead img{width:64px;height:auto}
+.letterhead strong{display:block;font-size:18px}
+.letterbody p{margin:0 0 8px}
+.mods{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px}
+.mods label{display:flex;gap:8px;align-items:flex-start;font-weight:500}
+@media(max-width:800px){.steps,.mods{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -526,6 +542,7 @@ function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
 function fmt(s){if(!s)return '';return parse(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
 function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
 function addMonths(s,n){var d=parse(s);d.setMonth(d.getMonth()+n);return iso(d);}
+function addYears(d,n){var x=new Date(d);x.setFullYear(x.getFullYear()+n);return x;}
 var TODAY=new Date();TODAY.setHours(0,0,0,0);var T=iso(TODAY);
 function initials(e){return (e.first[0]+e.last[0]).toUpperCase();}
 function full(e){return e.first+' '+e.last;}
@@ -757,19 +774,21 @@ var NAVG={
 };
 NAVG.hoh=NAVG.hr;
 var NAV={};Object.keys(NAVG).forEach(function(k){NAV[k]=[];NAVG[k].forEach(function(g){g[1].forEach(function(x){NAV[k].push(x);});});});
-function route(){var h=(location.hash||'').replace('#','');var ok=NAV[S.role].map(function(x){return x[0];});return ok.indexOf(h)>=0?h:'home';}
+function route(){var h=(location.hash||'').replace('#','');var ok=NAV[S.role].map(function(x){return x[0];});if(ok.indexOf(h)<0||!moduleOn(h))return 'home';return h;}
 function renderNav(){
   var r=route(),q=myQueue().length;
-  nav.innerHTML=NAVG[S.role].map(function(g){return (g[0]?'<div class="navh">'+g[0]+'</div>':'')+g[1].map(function(x){return '<a href="#'+x[0]+'"'+(x[0]===r?' aria-current="page"':'')+'><span class="lab">'+navIcon(x[0])+'<span>'+x[1]+'</span></span>'+(x[0]==='approvals'&&q?'<span class="count" aria-label="'+q+' waiting">'+q+'</span>':'')+'</a>';}).join('');}).join('');
+  nav.innerHTML=NAVG[S.role].map(function(g){var items=g[1].filter(function(x){return moduleOn(x[0]);});if(!items.length)return '';return (g[0]?'<div class="navh">'+g[0]+'</div>':'')+items.map(function(x){return '<a href="#'+x[0]+'"'+(x[0]===r?' aria-current="page"':'')+'><span class="lab">'+navIcon(x[0])+'<span>'+x[1]+'</span></span>'+(x[0]==='approvals'&&q?'<span class="count" aria-label="'+q+' waiting">'+q+'</span>':'')+'</a>';}).join('');}).join('');
   var m=me();
   document.getElementById('who').innerHTML=avHTML(m,'avatar sm')+'<div><div style="font-weight:600;font-size:14.5px">'+esc(full(m))+'</div><div style="color:var(--muted);font-size:13px">'+esc(m.title)+'</div></div>';
   sel.value=S.role;
 }
-function render(keep){dueRecords();renderNav();renderTopbar();var r=route();view.innerHTML=(VIEWS[r]||VIEWS.home)();
+function render(keep){ensureOps();dueRecords();renderNav();renderTopbar();var r=route();view.innerHTML=(VIEWS[r]||VIEWS.home)();
   if(r==='home'&&S.role!=='finance'){var t0=view.querySelector('.top');if(t0)t0.classList.add('hero');}
+  if(r==='home'){var note=dashNotes();if(note){var tp=view.querySelector('.top');if(tp)tp.insertAdjacentHTML('afterend',note);}}
+  if(r==='lifecycle'){var tp2=view.querySelector('.top');if(tp2)tp2.insertAdjacentHTML('afterend',lifecycleSteps());}
   if(r==='engagement')view.insertAdjacentHTML('afterbegin',photoBanner('ph_team','Your voice shapes Skystone','Take the pulse, recognise a colleague, and see what we are doing about it.'));
   if(r==='recruitment')view.insertAdjacentHTML('afterbegin',photoBanner('ph_market','People who serve Nigerian businesses well','Every hire starts from an approved position and ends with a smooth first day.'));
-  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);hohHook(r);recruitHook(r);mdHook(r);r11Hook(r);if(r==='trust')trustDl();if(!keep)window.scrollTo(0,0);}
+  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);hohHook(r);recruitHook(r);mdHook(r);r11Hook(r);opsHook(r);if(r==='trust')trustDl();if(!keep)window.scrollTo(0,0);}
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove('show');},2600);}
 function top(title,sub,extra){return '<div class="top"><div><h1>'+title+'</h1>'+(sub?'<p class="sub">'+sub+'</p>':'')+'</div>'+(extra||'')+'</div>';}
 function tag(text,kind){return '<span class="tag '+(kind||'plain')+'">'+esc(text)+'</span>';}
@@ -970,7 +989,7 @@ function recordBody(e,hrView){
   return '<h2>Employment</h2><dl class="kv">'+
    '<dt>Employee ID</dt><dd>'+e.id+'</dd><dt>Role</dt><dd>'+esc(e.title)+'</dd><dt>Grade</dt><dd>'+esc(GRADES[e.grade])+'</dd>'+
    '<dt>Department</dt><dd>'+esc(dept(e.dept).name)+'</dd><dt>Location</dt><dd>'+esc(e.branch)+'</dd>'+
-   '<dt>Reports to</dt><dd>'+(mg?esc(full(mg)):'Board of Directors')+'</dd><dt>Joined</dt><dd>'+fmt(e.start)+'</dd>'+
+   '<dt>Reports to</dt><dd>'+(mg?esc(full(mg)):'Board of Directors')+'</dd><dt>Joined</dt><dd>'+fmt(e.start)+'</dd><dt>Date of birth</dt><dd>'+(dobOf(e)?fmt(dobOf(e)):'Not recorded')+'</dd>'+
    '<dt>Status</dt><dd>'+(onProbation(e)?'Probation until '+fmt(probationEnd(e)):'Confirmed')+'</dd>'+
    (hrView?'<dt>Staff loan</dt><dd>'+(loanBalance(e.id)?naira(loanBalance(e.id))+' outstanding'+(e.loan&&e.loan!==loanBalance(e.id)?' of '+naira(e.loan):''):'None')+'</dd>':'')+'<dt>Work email</dt><dd style="word-break:break-all">'+esc(e.email)+'</dd><dt>Phone</dt><dd>'+(e.phone?esc(e.phone):'Ending '+esc(e.phoneEnd))+'</dd>'+(e.address?'<dt>Address</dt><dd>'+esc(e.address)+'</dd>':'')+(e.nok?'<dt>Next of kin</dt><dd>'+esc(e.nok)+'</dd>':'')+(e.marital?'<dt>Marital status</dt><dd>'+esc(e.marital)+'</dd>':'')+(e.bank?'<dt>Salary account</dt><dd>'+esc(e.bank)+'</dd>':'')+(e.quals&&e.quals.length?'<dt>Qualifications</dt><dd>'+e.quals.map(esc).join('; ')+'</dd>':'')+'<dt>Pension administrator</dt><dd>'+esc(e.pfa)+'</dd></dl>'+
    ((S.overrides[e.id]&&S.overrides[e.id].scheduled&&S.overrides[e.id].scheduled.length)?'<p class="hint">'+S.overrides[e.id].scheduled.map(function(p){return esc(p.field)+' becomes '+esc(p.value)+' on '+fmt(p.effective)+'.';}).join(' ')+'</p>':'')+
@@ -1204,6 +1223,7 @@ function openNewJoiner(){lastFocus=document.activeElement;
   '<div><label for="ng">Grade</label><select id="ng">'+GRADES.slice(1,8).map(function(g,i){return '<option value="'+(i+1)+'"'+(i===1?' selected':'')+'>'+g+'</option>';}).join('')+'</select></div>'+
   '<div><label for="nb">Location</label><select id="nb">'+br.map(function(b){return '<option>'+esc(b)+'</option>';}).join('')+'</select></div>'+
   '<div><label for="ns">Start date</label><input id="ns" type="date" min="'+T+'"></div>'+
+  '<div><label for="ndob">Date of birth</label><input id="ndob" type="date" max="'+iso(addYears(TODAY,-18))+'"></div>'+
   '<div class="full"><p class="hint">The record is created now, with probation set for six months. Pre-employment checks start as open tasks.</p><p class="err" id="nerr"></p><button class="btn primary" type="submit">Create record and start onboarding</button></div></form></div>';
   showDrawer();document.getElementById('nf').focus();
   document.getElementById('nj').onsubmit=function(ev){ev.preventDefault();var g=function(id){return document.getElementById(id).value.trim();},er=document.getElementById('nerr');
@@ -1211,8 +1231,10 @@ function openNewJoiner(){lastFocus=document.activeElement;
     if(!g('nt')){er.textContent='Enter the role they are joining.';return;}
     if(!g('ns')){er.textContent='Choose a start date.';return;}
     if(g('ns')<T){er.textContent='The start date cannot be in the past.';return;}
+    if(!g('ndob')){er.textContent='Enter the date of birth. Birthday notices use it.';return;}
+    if(g('ndob')>iso(addYears(TODAY,-18))){er.textContent='The joiner must be at least 18.';return;}
     var id=nextEmpId(),d=dept(g('nd')),head=BASE.emps.filter(function(e){return e.dept===d.code;})[0],gr=+g('ng');
-    S.added.push({id:id,first:g('nf'),last:g('nl'),gender:'',dept:d.code,title:g('nt'),grade:gr,branch:g('nb'),start:g('ns'),managerId:head.id,pfa:'To be confirmed',phoneEnd:'----',nin:false,guarantor:false,certs:false,refs:false,taken:0,blockDone:false,designated:!!d.block&&gr<=6,loan:0,email:(g('nf')+'.'+g('nl')).toLowerCase().replace(/[^a-z.]/g,'')+'@skystone-finance.com'});
+    S.added.push({id:id,first:g('nf'),last:g('nl'),gender:'',dept:d.code,title:g('nt'),grade:gr,branch:g('nb'),start:g('ns'),dob:g('ndob'),managerId:head.id,pfa:'To be confirmed',phoneEnd:'----',nin:false,guarantor:false,certs:false,refs:false,taken:0,blockDone:false,designated:!!d.block&&gr<=6,loan:0,email:(g('nf')+'.'+g('nl')).toLowerCase().replace(/[^a-z.]/g,'')+'@skystone-finance.com'});
     S.cases.push({id:nextCase(),type:'join',empId:id,date:g('ns'),created:T,tasks:joinTasks(),closed:false});
     addHistory(id,'Record created from an accepted offer.');save();closeDrawer();render();toast('Record '+id+' created. Onboarding has started.');};
 }
@@ -1412,7 +1434,7 @@ function payBank(rows) { const pay = rows.filter(c => !c.hold), held = rows.filt
 function payLoans(rows) { const ids = Object.keys(S.pay.loans), rr = ids.map(id => [emp(id), S.pay.loans[id], rows.find(c => c.e.id === id)]).filter(x => x[0]);
   const bal = sum(rr, x => x[1].balance), ded = sum(rr, x => x[2] ? x[2].loan : 0);
   return `<section class="band section"><div><div class="v">${rr.length}</div><div class="k">Staff with loans</div></div><div><div class="v">${ngnM(bal)}</div><div class="k">Outstanding balance</div></div><div><div class="v">${ngnM(ded)}</div><div class="k">Recovered this month</div></div><div><div class="v">${rr.filter(x => x[2] && x[2].capped).length}</div><div class="k">Deductions reduced by the cap</div></div></section>
-  <section class="panel section"><h2>Loan register</h2><p class="sub" style="margin:0 0 10px">Balances fall when Finance releases the run, and reconcile to the loan book. An exit cannot complete while a balance remains.</p><div class="tablewrap" style="border:0"><table><thead><tr><th>Employee</th><th>Loan</th><th class="num">Original</th><th class="num">Balance</th><th class="num">Monthly</th><th class="num">This month</th></tr></thead><tbody>${rr.sort((a, b) => b[1].balance - a[1].balance).slice(0, 40).map(([e, l, c]) => `<tr><td style="font-weight:600">${esc(full(e))}</td><td>${esc(l.type)}</td><td class="num">${N(l.principal)}</td><td class="num">${N(l.balance)}</td><td class="num">${N(l.monthly)}</td><td class="num">${c ? N(c.loan) + (c.capped ? ' ' + tag('Capped', 'warn') : '') : 'Not paid this month'}</td></tr>`).join('')}</tbody></table></div><p class="section">${tag('Reconciled', 'good')} Payroll register and loan book agree at ${N(bal)}.</p></section>`; }
+  <section class="panel section"><h2>Loan register</h2><p class="sub" style="margin:0 0 10px">Balances fall when Finance releases the run, and reconcile to the loan book. An exit cannot complete while a balance remains.</p><div class="tablewrap" style="border:0"><table><thead><tr><th>Employee</th><th>Loan</th><th class="num">Original</th><th class="num">Balance</th><th class="num">Monthly</th><th class="num">This month</th></tr></thead><tbody>${rr.sort((a, b) => b[1].balance - a[1].balance).map(([e, l, c]) => `<tr><td style="font-weight:600">${esc(full(e))}</td><td>${esc(l.type)}</td><td class="num">${N(l.principal)}</td><td class="num">${N(l.balance)}</td><td class="num">${N(l.monthly)}</td><td class="num">${c ? N(c.loan) + (c.capped ? ' ' + tag('Capped', 'warn') : '') : 'Not paid this month'}</td></tr>`).join('')}</tbody></table></div><p class="section">${tag('Reconciled', 'good')} Payroll register and loan book agree at ${N(bal)}.</p></section>`; }
 function paySettings() { const vs = S.pay.settings.versions.slice().sort((a, b) => a.effective < b.effective ? 1 : -1), cur = setFor(S.pay.period), pend = S.requests.filter(r => r.kind === 'payset' && r.status === 'pending');
   return `<div class="grid2"><section class="panel"><h2>Statutory settings in force</h2><p class="sub" style="margin:0 0 10px">From ${fmt(cur.effective)}. ${esc(cur.note || '')}</p><div class="tablewrap" style="border:0"><table><tbody>${PSET_FIELDS.map(([k, l]) => `<tr><td>${l}</td><td class="num">${/rentCap|minWage/.test(k) ? N(cur[k]) : cur[k] + '%'}</td></tr>`).join('')}</tbody></table></div>
    <h3 class="section">PAYE bands (annual chargeable income)</h3><div class="tablewrap" style="border:0"><table><tbody>${cur.bands.map(([w, r], i) => `<tr><td>${i === 0 ? 'First' : w === null ? 'Above' : 'Next'} ${w === null ? N(sum(cur.bands.slice(0, i), b => b[0])) : N(w)}</td><td class="num">${r}%</td></tr>`).join('')}</tbody></table></div>
@@ -1949,11 +1971,11 @@ var BNAV = { employee: [['home', 'Home', 'i_home'], ['leave', 'Leave', 'i_calend
   hr: [['home', 'Home', 'i_home'], ['approvals', 'Approve', 'i_clipboard'], ['people', 'People', 'i_people'], ['payroll', 'Payroll', 'i_wallet']],
   finance: [['home', 'Home', 'i_home'], ['approvals', 'Approve', 'i_clipboard'], ['payroll', 'Payroll', 'i_wallet'], ['planning', 'Planning', 'i_chart']] };
 BNAV.hoh = BNAV.hr;
-function renderBnav() { var r = route(), q = myQueue().length, items = BNAV[S.role], more = S.role !== 'employee';
+function renderBnav() { var r = route(), q = myQueue().length, items = (BNAV[S.role] || []).filter(function (x) { return moduleOn(x[0]); }), more = S.role !== 'employee';
   document.getElementById('bnav').innerHTML = items.map(function (x) { return '<a href="#' + x[0] + '"' + (x[0] === r ? ' aria-current="page"' : '') + '><img class="ic-img" src="' + IMG[x[2]] + '" alt=""><span>' + x[1] + '</span>' + (x[0] === 'approvals' && q ? '<i>' + q + '</i>' : '') + '</a>'; }).join('') + (more ? '<button type="button" id="bmore"><span class="dots" aria-hidden="true">•••</span><span>More</span></button>' : '');
   var b = document.getElementById('bmore'); if (b) b.onclick = openMore; }
 function openMore() { var el = document.getElementById('more');
-  el.innerHTML = '<div class="sheet"><div class="sheet-h"><h2>All screens</h2><button class="close" id="mclose" type="button" aria-label="Close">×</button></div>' + NAVG[S.role].map(function (g) { return (g[0] ? '<div class="navh" style="display:block">' + g[0] + '</div>' : '') + '<div class="mgrid">' + g[1].map(function (x) { return '<a href="#' + x[0] + '">' + navIcon(x[0]) + '<span>' + x[1] + '</span></a>'; }).join('') + '</div>'; }).join('') + '</div>';
+  el.innerHTML = '<div class="sheet"><div class="sheet-h"><h2>All screens</h2><button class="close" id="mclose" type="button" aria-label="Close">×</button></div>' + NAVG[S.role].map(function (g) { var items = g[1].filter(function (x) { return moduleOn(x[0]); }); if (!items.length) return ''; return (g[0] ? '<div class="navh" style="display:block">' + g[0] + '</div>' : '') + '<div class="mgrid">' + items.map(function (x) { return '<a href="#' + x[0] + '">' + navIcon(x[0]) + '<span>' + x[1] + '</span></a>'; }).join('') + '</div>'; }).join('') + '</div>';
   el.classList.add('open'); el.querySelectorAll('a').forEach(function (a) { a.onclick = function () { el.classList.remove('open'); }; });
   document.getElementById('mclose').onclick = function () { el.classList.remove('open'); }; el.onclick = function (ev) { if (ev.target === el) el.classList.remove('open'); }; }
 function labelTables() { document.querySelectorAll('#view table, #drawer table').forEach(function (t) { if (t.classList.contains('matrix') || t.classList.contains('ts')) return; var th = t.querySelectorAll('thead th'); if (!th.length) { t.classList.add('nohead'); return; }
@@ -2963,14 +2985,14 @@ function bind(r){bindV2(r);bindP7(r);
   if(cf)cf.onsubmit=function(ev){ev.preventDefault();var v=document.getElementById('cval').value.trim();if(!v){document.getElementById('cerr').textContent='Describe the new details.';return;}
     S.requests.push({id:nextId(),kind:'change',empId:me().id,field:document.getElementById('cfld').value,value:v,created:T,status:'pending'});save();render();toast('Sent to HR for verification.');};
 }
-function rowOpen(ev){if(rowOpenV2(ev))return;var tc=ev.target.closest&&ev.target.closest('tr[data-case]');if(tc){openCase(tc.getAttribute('data-case'));return;}var tr=ev.target.closest&&ev.target.closest('tr[data-emp]');if(tr&&isHRorMgr())openEmp(tr.getAttribute('data-emp'));}
+function rowOpen(ev){if(rowOpenV2(ev))return;var tm=ev.target.closest&&ev.target.closest('tr[data-memo]');if(tm){openMemo(tm.getAttribute('data-memo'));return;}var tq=ev.target.closest&&ev.target.closest('tr[data-cash]');if(tq){openCash(tq.getAttribute('data-cash'));return;}var tc=ev.target.closest&&ev.target.closest('tr[data-case]');if(tc){openCase(tc.getAttribute('data-case'));return;}var tr=ev.target.closest&&ev.target.closest('tr[data-emp]');if(tr&&isHRorMgr())openEmp(tr.getAttribute('data-emp'));}
 function rowKey(ev){if(ev.key==='Enter')rowOpen(ev);}
 function isHRorMgr(){return S.role!=='employee';}
 
-sel.onchange=function(){S.role=sel.value;save();if(location.hash&&route()!==location.hash.replace('#',''))location.hash='home';render();};
+sel.onchange=function(){S.role=sel.value;save();if(location.hash&&route()!==location.hash.replace('#',''))location.hash='home';closeDrawer();render();};
 document.getElementById('reset').onclick=function(){if(confirm('Reset all sample requests and changes?')){var role=S.role;S=seedState();applyV2();S.role=role;save();render();toast('Sample data reset.');}};
 view.addEventListener('click',rowOpen);view.addEventListener('keydown',rowKey);
-window.addEventListener('hashchange',function(){render();});
+window.addEventListener('hashchange',function(){closeDrawer();render();});
 if(!S.v2){applyV2();save();}
 if(!S.pay3){applyPay();save();}
 if(!S.snap){seedSnap();save();}
@@ -2980,6 +3002,114 @@ if(!S.r9){upgradeRecruit();save();}
 if(!S.r11){seedR11();save();}
 (function(){if(S.waSeeded)return;if(!S.waOpt)S.waOpt={};var es=allEmps(),target=Math.round(es.length*0.62),on=0;es.forEach(function(e){if(S.waOpt[e.id])on++;});es.forEach(function(e){if(on>=target||S.waOpt[e.id])return;S.waOpt[e.id]=true;on++;});S.waSeeded=true;save();})();
 (function(){if(!P.payroll||!S.pay||!S.pay.history)return;var changed=false;S.pay.history.forEach(function(h){if(h.by&&h.by.prepared&&h.by.prepared!==P.payroll){var old=h.by.prepared;h.by.prepared=P.payroll;changed=true;(S.audit||[]).forEach(function(e){if(e.actor===old&&/Payroll .+ prepared/.test(e.text))e.actor=P.payroll;});}});if(changed){var prev='GENESIS';(S.audit||[]).forEach(function(e){e.hash=auditHash(e,prev);prev=e.hash;});save();}})();
+/* ================= memos, cash requests, birthdays, module switches ================= */
+function moduleOn(k){if(!k||k==='home'||k==='modules')return true;return !(S&&S.modules&&S.modules[k]===false);}
+function dobOf(e){if(!e)return '';var o=S.overrides&&S.overrides[e.id];return (o&&o.dob)||e.dob||'';}
+function birthdaysOn(day){var md=day.slice(5);return allEmps().filter(function(e){var d=dobOf(e);return d&&d.slice(5)===md;});}
+function assignDobs(){var r=mulberry32(4242),months=[31,28,31,30,31,30,31,31,30,31,30,31],n=0;
+  BASE.emps.forEach(function(e,i){if(e.dob)return;var age=24+Math.floor(r()*34),year=TODAY.getFullYear()-age,month,day;
+    if(n<4&&(e.id===P.employee||e.id===P.manager||i%53===0)){month=TODAY.getMonth()+1;day=TODAY.getDate();n++;}
+    else{month=1+Math.floor(r()*12);day=1+Math.floor(r()*months[month-1]);}
+    e.dob=year+'-'+pad(month)+'-'+pad(day);});}
+function birthdayNote(){var today=birthdaysOn(T),soon=[],i;for(i=1;i<=7;i++){var d=iso(addDays(TODAY,i));birthdaysOn(d).forEach(function(e){soon.push([e,i]);});}
+  if(!today.length&&!soon.length)return '';
+  var mine=today.some(function(e){return e.id===me().id;});
+  var names=today.map(function(e){return full(e)+(e.id===me().id?' (you)':'')+', '+dept(e.dept).name;}).join('; ');
+  var later=soon.slice(0,6).map(function(x){return full(x[0])+' in '+plural(x[1],'day');}).join('; ');
+  return '<section class="bday" aria-label="Birthdays"><div><h2>'+(mine?'Happy birthday':'Birthdays')+'</h2><p style="margin:0">'+(today.length?esc(names):'No birthdays today.')+'</p>'+(later?'<p class="hint">Coming up: '+esc(later)+(soon.length>6?' and others':'')+'.</p>':'')+'</div></section>';}
+function dashNotes(){var html=birthdayNote(),bits=[],m=me();
+  if(moduleOn('memos')){var n=memosToSign(m).length;if(n)bits.push('<button class="btn small primary" data-go="memos" type="button">'+plural(n,'memo')+' to sign</button>');}
+  if(moduleOn('cash')){var c=cashMine().length;if(c)bits.push('<button class="btn small" data-go="cash" type="button">'+plural(c,'cash request')+' waiting for you</button>');}
+  if(bits.length)html+='<section class="panel" style="margin-bottom:16px"><h2>Needs you</h2><div class="actions">'+bits.join('')+'</div></section>';
+  return html;}
+function lifecycleSteps(){return '<section class="steps" aria-label="How joining and leaving works"><div class="stepc"><div class="n">1</div><strong>Start</strong><p class="sub" style="margin:6px 0 0">A joiner gets a record, a date of birth and a checklist. A leaver is named with a last day, and system access is switched off.</p></div><div class="stepc"><div class="n">2</div><strong>Handover</strong><p class="sub" style="margin:6px 0 0">Laptop, cards, files and the line manager’s sign-off. Items already done are marked for you.</p></div><div class="stepc"><div class="n">3</div><strong>Close</strong><p class="sub" style="margin:6px 0 0">HR completes onboarding. The Head of HR releases a leaver’s final pay once every clearance task is done.</p></div></section>';}
+function cleanHtml(html){var d=document.createElement('div');d.innerHTML=html||'';d.querySelectorAll('script,style,iframe,object,embed').forEach(function(n){n.remove();});
+  d.querySelectorAll('*').forEach(function(n){[].slice.call(n.attributes).forEach(function(a){if(/^on/i.test(a.name)||a.name==='style')n.removeAttribute(a.name);if(a.name==='href'&&/^\s*javascript:/i.test(a.value))n.removeAttribute('href');});});return d.innerHTML;}
+function plainText(html){var d=document.createElement('div');d.innerHTML=html||'';return (d.textContent||'').replace(/\s+/g,' ').trim();}
+function wordCount(s){return s.trim()?s.trim().split(/\s+/).length:0;}
+function canWriteMemo(){return isHR()||S.role==='md'||S.role==='manager';}
+function canOverseeMemos(){return isHR()||S.role==='md';}
+function canSeeMemoNote(memo){return isHR()||S.role==='md'||memo.authorId===me().id;}
+function memoAudience(memo,e){if(!e)return false;if(memo.audience==='all')return true;if(memo.audience==='dept')return e.dept===memo.dept;if(memo.audience==='team')return e.managerId===memo.authorId||e.id===memo.authorId;return false;}
+function canOpenMemo(memo){var m=me();if(memo.status==='recalled')return S.role==='md'||isHR();return memoAudience(memo,m)||canOverseeMemos()||memo.authorId===m.id;}
+function memoPeople(memo){return allEmps().filter(function(e){return memoAudience(memo,e);});}
+function audLabel(memo){if(memo.audience==='all')return 'All staff';if(memo.audience==='dept')return dept(memo.dept).name;return 'Direct reports of '+full(emp(memo.authorId));}
+function memosToSign(m){return (S.memos||[]).filter(function(x){return x.status!=='recalled'&&x.requireSign!==false&&memoAudience(x,m)&&!(x.signed&&x.signed[m.id]);});}
+function managerChoices(exceptId){var ids={};allEmps().forEach(function(e){if(e.managerId)ids[e.managerId]=1;});return allEmps().filter(function(e){return ids[e.id]&&e.id!==exceptId;}).sort(function(a,b){return full(a)<full(b)?-1:1;});}
+function cashMine(){var m=me(),rows=(S.cash||[]).filter(function(c){return c.status==='manager'&&c.managerId===m.id;});if(S.role==='finance')rows=rows.concat((S.cash||[]).filter(function(c){return c.status==='finance';}));return rows;}
+function canSeeCashNote(c){var m=me();return isHR()||S.role==='md'||S.role==='finance'||c.managerId===m.id;}
+function addStaffLoan(empId,amount,ref){if(!S.pay.loans)S.pay.loans={};var monthly=amount<1000?amount:Math.max(1000,Math.round(amount/12/100)*100),L=S.pay.loans[empId];
+  if(!L)S.pay.loans[empId]={type:'Staff loan',principal:amount,balance:amount,monthly:monthly};
+  else{L.type='Staff loan';L.principal=(+L.principal||0)+amount;L.balance=(+L.balance||0)+amount;L.monthly=Math.max(+L.monthly||0,monthly);}
+  addHistory(empId,'Staff loan of '+naira(amount)+' added from cash request '+ref+'.');}
+function ensureNav(){Object.keys(NAVG).forEach(function(role){var keys=[];NAVG[role].forEach(function(g){g[1].forEach(function(x){keys.push(x[0]);});});
+    if(keys.indexOf('memos')<0)NAVG[role][0][1].push(['memos','Memos']);
+    if(keys.indexOf('cash')<0){var placed=false;NAVG[role].forEach(function(g){if(!placed&&(g[0]==='Time and pay'||g[0]==='Pay and cost'||g[0]==='Time'||g[0]==='Payroll')){g[1].push(['cash','Cash requests']);placed=true;}});if(!placed)NAVG[role][0][1].push(['cash','Cash requests']);}
+    if(role==='md'&&keys.indexOf('modules')<0){var ag=NAVG.md.filter(function(g){return g[0]==='Assurance';})[0];(ag?ag[1]:NAVG.md[0][1]).push(['modules','Modules']);}
+    NAV[role]=[];NAVG[role].forEach(function(g){g[1].forEach(function(x){NAV[role].push(x);});});});
+  NAVICON.memos='i_docs';NAVICON.cash='i_wallet';NAVICON.modules='i_org';}
+function seedOps(){var author=P.hoh||P.hr;
+  S.memos=[{id:'MM-001',type:'Memo',title:'Block leave before year end',body:'<p>Please agree your remaining annual leave with your line manager before <strong>15 December</strong>.</p><ul><li>Designated roles must take at least 10 consecutive working days.</li><li>Reply to your manager this week.</li></ul>',note:'Chase Credit and Recoveries first. Their block-leave list is still open.',audience:'all',authorId:author,created:iso(addDays(TODAY,-2)),status:'active',requireSign:true,read:{},signed:{}},
+    {id:'MM-002',type:'Policy',title:'Draft dress code for branches',body:'<p>This draft asked branches to change the Friday dress code. It has been withdrawn.</p>',note:'Withdrawn after the branch managers’ meeting. Do not reissue without the MD.',audience:'all',authorId:author,created:iso(addDays(TODAY,-12)),status:'recalled',recalledOn:iso(addDays(TODAY,-1)),recalledBy:P.md,requireSign:true,read:{},signed:{}}];
+  S.cash=[{id:'CR-001',empId:P.employee,managerId:P.manager,description:'Transport for three customer visits in Ikeja',amount:18500,invoiceName:'ikeja-transport.pdf',invoiceData:'',loan:false,status:'manager',created:iso(addDays(TODAY,-1)),managerNote:'',financeNote:''}];}
+function ensureOps(){if(!S.memos)S.memos=[];if(!S.cash)S.cash=[];if(!S.modules)S.modules={};assignDobs();ensureNav();if(!S.opsSeeded){seedOps();S.opsSeeded=true;save();}}
+function allModules(){var seen={},out=[];Object.keys(NAVG).forEach(function(role){NAVG[role].forEach(function(g){g[1].forEach(function(x){if(x[0]==='home'||x[0]==='modules'||seen[x[0]])return;seen[x[0]]=1;out.push({key:x[0],label:x[1],group:g[0]||'Everyday'});});});});return out;}
+VIEWS.memos=function(){var m=me(),rows=(S.memos||[]).filter(function(x){return canOverseeMemos()||x.authorId===m.id||memoAudience(x,m);});
+  var form=canWriteMemo()?'<section class="panel"><h2>Publish a memo or policy</h2><p class="sub" style="margin:0 0 12px">Staff see this on the company letterhead. Internal notes and internal files stay with HR and the Managing Director.</p><form id="memf" class="form" novalidate><div><label for="mems">Subject</label><input id="mems" autocomplete="off"></div><div><label for="memt">Type</label><select id="memt"><option>Memo</option><option>Policy</option></select></div><div class="full"><label>Body (staff will see this)</label><div class="rtebar"><button type="button" data-cmd="bold"><b>B</b></button><button type="button" data-cmd="italic"><i>I</i></button><button type="button" data-cmd="underline"><u>U</u></button><button type="button" data-cmd="insertUnorderedList">List</button><button type="button" data-cmd="formatBlock">H3</button></div><div id="membody" class="rte" contenteditable="true" role="textbox" aria-multiline="true" data-ph="Official wording"></div></div><div><label for="mema">Audience</label><select id="mema"><option value="all">All staff</option><option value="dept">One department</option>'+(team(m.id).length?'<option value="team">My direct reports</option>':'')+'</select></div><div id="memdwrap" hidden><label for="memd">Department</label><select id="memd">'+DEPTS.map(function(d){return '<option value="'+d.code+'">'+esc(d.name)+'</option>';}).join('')+'</select></div><div><label for="memfile">Attachment (optional)</label><input id="memfile" type="file"><label style="display:flex;gap:8px;margin-top:8px;font-weight:500"><input type="checkbox" id="memint"> Internal only. Staff will not see this file.</label></div><div class="full"><label for="memn">Internal notes (staff cannot see)</label><textarea id="memn" placeholder="For HR and the Managing Director only"></textarea></div><label class="full" style="display:flex;gap:8px;font-weight:500"><input type="checkbox" id="memsign" checked> Require a signature (“I have read this”)</label><div class="full"><p class="err" id="memerr"></p><button class="btn primary" type="submit">Publish</button></div></form></section>':'';
+  var table=rows.length?'<div class="tablewrap" style="border:0"><table><thead><tr><th>Subject</th><th>To</th><th>Status</th><th>Read</th><th>Signed</th></tr></thead><tbody>'+rows.map(function(x){var people=memoPeople(x),rd=Object.keys(x.read||{}).length,sg=Object.keys(x.signed||{}).length,open=canOpenMemo(x);
+    return '<tr class="'+(open?'click':'')+'" '+(open?'tabindex="0" data-memo="'+x.id+'"':'')+'><td style="font-weight:600">'+esc(x.title)+'<div class="idn">'+esc(x.type)+' · '+x.id+'</div></td><td>'+esc(audLabel(x))+'</td><td>'+(x.status==='recalled'?tag('Recalled','bad'):tag('Published','good'))+(x.status==='recalled'&&!open?'<div class="idn">Title only. Recalled memos cannot be opened.</div>':'')+'</td><td class="num">'+(x.status==='recalled'&&!canOverseeMemos()?'—':rd+' / '+people.length)+'</td><td class="num">'+(x.requireSign===false?'Not required':(x.status==='recalled'&&!canOverseeMemos()?'—':sg+' / '+people.length))+'</td></tr>';}).join('')+'</tbody></table></div>':emptyState('No memos yet.');
+  return top('Memos',canWriteMemo()?'Publish on the company letterhead. Staff sign to confirm they have read it.':'Memos addressed to you. Sign each one after you have read it.')+form+'<section class="panel section"><h2>'+(canOverseeMemos()?'All memos':'Your memos')+'</h2>'+table+'</section>';};
+function openMemo(id){var memo=(S.memos||[]).filter(function(x){return x.id===id;})[0];if(!memo||!canOpenMemo(memo)){toast('This memo has been recalled and can no longer be opened.');return;}
+  var m=me();if(memo.status!=='recalled'&&memoAudience(memo,m)){memo.read[m.id]=memo.read[m.id]||T;save();}
+  var file=memo.fileName&&(canSeeMemoNote(memo)||!memo.fileInternal)?'<p class="section"><a href="'+(memo.fileData||'#')+'" download="'+esc(memo.fileName)+'">'+esc(memo.fileName)+'</a>'+(memo.fileInternal?' '+tag('Internal file','warn'):'')+'</p>':'';
+  var signed=memo.signed&&memo.signed[m.id];
+  var signBtn=memo.status!=='recalled'&&memo.requireSign!==false&&memoAudience(memo,m)&&!signed?'<button class="btn primary section" id="memsignbtn" type="button">I have read this memo</button>':(signed?'<p>'+tag('You signed on '+fmt(signed),'good')+'</p>':'');
+  var note=canSeeMemoNote(memo)&&memo.note?'<section class="panel section"><h2>Internal notes</h2><p class="hint">Staff cannot see this.</p><p>'+esc(memo.note)+'</p></section>':'';
+  var recall=S.role==='md'&&memo.status!=='recalled'?'<button class="btn section" id="memrecall" type="button">Recall this memo</button><p class="hint">A recalled memo stays on your list, marked Recalled. Staff keep the title and cannot open it.</p>':'';
+  var people=memoPeople(memo),stats=(canOverseeMemos()||memo.authorId===m.id)?'<section class="panel section"><h2>Who has read and signed</h2><div class="tablewrap" style="border:0"><table><thead><tr><th>Name</th><th>Read</th><th>Signed</th></tr></thead><tbody>'+people.map(function(e){return '<tr><td>'+esc(full(e))+'</td><td>'+(memo.read[e.id]?tag(fmt(memo.read[e.id]),'good'):tag('Not yet','warn'))+'</td><td>'+(memo.requireSign===false?'Not required':(memo.signed[e.id]?tag(fmt(memo.signed[e.id]),'good'):tag('Not signed','plain')))+'</td></tr>';}).join('')+'</tbody></table></div></section>':'';
+  var letter='<article class="letter"><header class="letterhead"><img src="'+ICON+'" alt="Skystone"><div><strong>Skystone Finance Limited</strong><span class="idn">People Office · Internal memorandum</span><span class="idn">Lagos Head Office</span></div></header><p class="idn">'+esc(memo.type)+' · '+fmt(memo.created)+(memo.status==='recalled'?' · Recalled '+fmt(memo.recalledOn):'')+'</p><h2 style="margin:8px 0">'+esc(memo.title)+'</h2><p><strong>From</strong> '+esc(full(emp(memo.authorId)))+'<br><strong>To</strong> '+esc(audLabel(memo))+'</p><div class="letterbody">'+cleanHtml(memo.body)+'</div>'+file+'</article>'+signBtn+recall+note+stats;
+  dOpen(memo.status==='recalled'?'Recalled memo':memo.type,memo.id,letter,true);
+  var sb=document.getElementById('memsignbtn');if(sb)sb.onclick=function(){memo.signed[m.id]=T;memo.read[m.id]=T;addHistory(m.id,'Signed memo '+memo.id+' ('+memo.title+').');save();toast('Signed. Thank you.');openMemo(id);render(true);};
+  var rb=document.getElementById('memrecall');if(rb)rb.onclick=function(){if(!confirm('Recall this memo? Staff will see the title only.'))return;memo.status='recalled';memo.recalledOn=T;memo.recalledBy=P.md;save();toast('Memo recalled.');closeDrawer();render(true);};}
+VIEWS.cash=function(){var m=me(),mgrs=managerChoices(m.id);
+  var form='<section class="panel"><h2>Request cash</h2><form id="crf" class="form" novalidate><div><label for="crm">Manager to approve</label><select id="crm">'+mgrs.map(function(e){return '<option value="'+e.id+'"'+(e.id===m.managerId?' selected':'')+'>'+esc(full(e))+', '+esc(e.title)+'</option>';}).join('')+'</select></div><div><label for="cra">Amount (₦)</label><input id="cra" type="number" min="1" step="1"></div><div class="full"><label for="crd">Description (10 words at most)</label><input id="crd" maxlength="120" autocomplete="off"><p class="hint" id="crw">0 of 10 words</p></div><div><label for="crfile">Invoice</label><input id="crfile" type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"></div><label style="display:flex;gap:8px;align-items:center;font-weight:500"><input type="checkbox" id="crloan"> This is a staff loan</label><div class="full"><p class="err" id="crerr"></p><button class="btn primary" type="submit">Submit request</button><p class="hint">Your manager approves first. Finance approves next. A staff loan is added to the loan register when Finance approves it.</p></div></form></section>';
+  var mine=(S.cash||[]).filter(function(c){return c.empId===m.id;});
+  var mineTable=mine.length?cashTable(mine,false):emptyState('You have not requested cash yet.');
+  var wait=cashMine();
+  var waitPanel=wait.length?'<section class="panel section"><h2>Waiting for you</h2>'+cashTable(wait,true)+'</section>':'';
+  var all=(isHR()||S.role==='md')&&(S.cash||[]).length?'<section class="panel section"><h2>All cash requests</h2><p class="sub" style="margin:0 0 8px">Internal notes are visible here. The person who asked does not see them.</p>'+cashTable(S.cash,false)+'</section>':'';
+  return top('Cash requests','Choose the manager who should approve it, describe it in 10 words, and attach the invoice.')+form+'<section class="panel section"><h2>Your requests</h2>'+mineTable+'</section>'+waitPanel+all;};
+function cashTable(rows,act){return '<div class="tablewrap" style="border:0"><table><thead><tr><th>Request</th><th>For</th><th class="num">Amount</th><th>Status</th>'+(act?'<th></th>':'')+'</tr></thead><tbody>'+rows.map(function(c){var e=emp(c.empId),st=c.status==='manager'?'With '+full(emp(c.managerId)):c.status==='finance'?'With Finance':c.status==='approved'?'Approved':'Rejected';
+    return '<tr class="click" tabindex="0" data-cash="'+c.id+'"><td style="font-weight:600">'+esc(c.description)+'<div class="idn">'+c.id+(c.loan?' · Staff loan':'')+'</div></td><td>'+esc(full(e))+'</td><td class="num">'+naira(c.amount)+'</td><td>'+tag(st,c.status==='approved'?'good':c.status==='rejected'?'bad':'warn')+'</td>'+(act?'<td><button class="btn small" type="button" data-cash="'+c.id+'">Review</button></td>':'')+'</tr>';}).join('')+'</tbody></table></div>';}
+function openCash(id){var c=(S.cash||[]).filter(function(x){return x.id===id;})[0];if(!c)return;var m=me(),e=emp(c.empId),notes=canSeeCashNote(c);
+  var body='<p><strong>'+esc(full(e))+'</strong> asked '+esc(full(emp(c.managerId)))+' to approve '+naira(c.amount)+(c.loan?', as a staff loan':'')+'.</p><p>'+esc(c.description)+'</p>'+(c.invoiceName?'<p>Invoice: '+(c.invoiceData?'<a href="'+c.invoiceData+'" download="'+esc(c.invoiceName)+'">'+esc(c.invoiceName)+'</a>':esc(c.invoiceName))+'</p>':'');
+  if(notes)body+='<p class="hint">Internal notes stay with the manager, Finance, HR and the Managing Director.</p>'+(c.managerNote?'<p><strong>Manager:</strong> '+esc(c.managerNote)+'</p>':'')+(c.financeNote?'<p><strong>Finance:</strong> '+esc(c.financeNote)+'</p>':'');
+  var decide=(c.status==='manager'&&c.managerId===m.id)||(c.status==='finance'&&S.role==='finance');
+  if(decide)body+='<form id="crdecide" class="form section"><div class="full"><label for="crnote">Internal note (optional)</label><textarea id="crnote"></textarea></div><div class="full actions"><button class="btn primary" id="crok" type="button">Approve</button><button class="btn" id="crno" type="button">Reject</button></div></form>';
+  dOpen('Cash request '+c.id,c.status==='approved'?'Approved':c.status==='rejected'?'Rejected':'Awaiting approval',body,true);
+  function act(ok){var note=(document.getElementById('crnote')||{}).value||'';note=note.trim();
+    if(c.status==='manager'){c.managerNote=note;if(!ok){c.status='rejected';}else c.status='finance';}
+    else if(c.status==='finance'&&S.role==='finance'){c.financeNote=note;c.status=ok?'approved':'rejected';if(ok&&c.loan)addStaffLoan(c.empId,c.amount,c.id);}
+    c.decided=T;save();toast(ok?(c.status==='finance'?'Sent to Finance.':'Approved'+(c.loan?'. Added to the staff loan register.':'.')):'Rejected.');closeDrawer();render(true);}
+  var okb=document.getElementById('crok'),nob=document.getElementById('crno');if(okb)okb.onclick=function(){act(true);};if(nob)nob.onclick=function(){act(false);};}
+VIEWS.modules=function(){if(S.role!=='md')return top('Modules','Only the Managing Director can switch modules on or off.')+'<p class="sub">Ask the Managing Director if a screen should be hidden.</p>';
+  var groups={};allModules().forEach(function(x){(groups[x.group]=groups[x.group]||[]).push(x);});
+  var body=Object.keys(groups).map(function(g){return '<section class="panel section"><h2>'+esc(g||'Everyday')+'</h2><div class="mods">'+groups[g].map(function(x){return '<label><input type="checkbox" data-mod="'+x.key+'"'+(moduleOn(x.key)?' checked':'')+'> '+esc(x.label)+'</label>';}).join('')+'</div></section>';}).join('');
+  return top('Modules','Super admin. Switch off any module the company is not using. It disappears from every menu. Home and this page stay available.')+'<form id="modf">'+body+'<div class="actions section"><button class="btn primary" type="submit">Save</button></div><p class="hint">Turning a module back on restores it for the roles that already had it.</p></form>';};
+function opsHook(r){if(r==='memos'){var bar=view.querySelectorAll('.rtebar button');bar.forEach(function(b){b.onmousedown=function(ev){ev.preventDefault();};b.onclick=function(){var cmd=b.getAttribute('data-cmd');if(cmd==='formatBlock')document.execCommand('formatBlock',false,'H3');else document.execCommand(cmd,false,null);};});
+    var aud=document.getElementById('mema');if(aud)aud.onchange=function(){document.getElementById('memdwrap').hidden=aud.value!=='dept';};
+    var f=document.getElementById('memf');if(f)f.onsubmit=function(ev){ev.preventDefault();var title=fv('mems'),body=cleanHtml(document.getElementById('membody').innerHTML),er=document.getElementById('memerr');
+      if(!title)return ferr('memerr','Enter a subject.');if(!plainText(body))return ferr('memerr','Write the memo.');
+      var fileEl=document.getElementById('memfile'),finish=function(file){var id='MM-'+String(S.memos.length+1).padStart(3,'0');
+        S.memos.unshift({id:id,type:fv('memt')||'Memo',title:title,body:body,note:fv('memn'),audience:fv('mema')||'all',dept:fv('memd'),authorId:me().id,created:T,status:'active',requireSign:document.getElementById('memsign').checked,fileName:file&&file.name,fileData:file&&file.data,fileInternal:document.getElementById('memint').checked,read:{},signed:{}});
+        save();render();toast('Published to '+audLabel(S.memos[0])+'.');};
+      if(fileEl&&fileEl.files&&fileEl.files[0]){if(fileEl.files[0].size>1500000){er.textContent='The attachment must be under 1.5 MB.';return;}var rd=new FileReader();rd.onload=function(){finish({name:fileEl.files[0].name,data:rd.result});};rd.readAsDataURL(fileEl.files[0]);}else finish(null);};}
+  if(r==='cash'){var desc=document.getElementById('crd');if(desc)desc.oninput=function(){var n=wordCount(desc.value);var el=document.getElementById('crw');if(el)el.textContent=n+' of 10 words';};
+    var cf=document.getElementById('crf');if(cf)cf.onsubmit=function(ev){ev.preventDefault();var description=fv('crd'),amount=+fv('cra'),fileEl=document.getElementById('crfile');
+      if(!fv('crm'))return ferr('crerr','Choose a manager.');if(!(amount>0))return ferr('crerr','Enter the amount.');if(wordCount(description)<1)return ferr('crerr','Describe the request.');if(wordCount(description)>10)return ferr('crerr','Use 10 words or fewer. This has '+wordCount(description)+'.');
+      if(!fileEl.files||!fileEl.files[0])return ferr('crerr','Attach the invoice.');if(fileEl.files[0].size>1500000)return ferr('crerr','The invoice must be under 1.5 MB.');
+      var rd=new FileReader();rd.onload=function(){var mgr=fv('crm'),id='CR-'+String((S.cash||[]).length+1).padStart(3,'0');S.cash.unshift({id:id,empId:me().id,managerId:mgr,description:description.trim(),amount:amount,invoiceName:fileEl.files[0].name,invoiceData:rd.result,loan:document.getElementById('crloan').checked,status:'manager',created:T,managerNote:'',financeNote:''});save();render();toast('Sent to '+full(emp(mgr))+' for approval.');};rd.readAsDataURL(fileEl.files[0]);};}
+  if(r==='modules'){var mf=document.getElementById('modf');if(mf)mf.onsubmit=function(ev){ev.preventDefault();if(S.role!=='md')return;S.modules={};mf.querySelectorAll('[data-mod]').forEach(function(box){if(!box.checked)S.modules[box.getAttribute('data-mod')]=false;});save();render();toast('Modules updated.');};}}
 keepJoinerIdsClear();
 render();
 if(!S.signedIn)showSignin();
