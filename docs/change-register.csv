@@ -1,0 +1,82 @@
+Area,Requirement,Status,Notes
+Record,"Employment details: contract type, probation end, notice, pattern, hours, confirmation date",Built,Probation end = start + 6 months (setting) and moves with an extension. Fixed-term shows end date.
+Record,Emergency contact separate from next of kin,Partly built (finish in production build),Shown and flagged when missing; employee can request a change. Blocking onboarding close is in Release 16.
+Record,Full NIN visible to HR verifiers and Head of HR only; masked elsewhere; views logged,Built,"Applies to NIN, ID document number, TIN and RSA PIN."
+Record,Passport/driving licence with expiry and 60-day alert,Partly built (finish in production build),"Fields, Expired status and 60-day warning shown; scanned copy upload and HR alert list in Release 16."
+Record,TIN and RSA PIN feed payroll,Built,"Payslip header shows TIN or ""TIN not provided""; approving a TIN change clears the payroll exception."
+Record,Changes stay Pending until HR approves; rejection needs a reason shown to employee,Built,
+Record,"Mandatory evidence for name, bank, qualification, marital status, date of birth; PDF/JPG/PNG up to 10 MB",Built,
+Record,Bank change needs HR call-back; changes after the 11th apply next month,Built,
+Record,Verification within the first month; alert at day 25,Production build,
+Record,"Record history: old, new, effective date, requester, approver, time",Built,
+Record,Effective dating; back-dated salary/grade changes calculate arrears,Partly built (finish in production build),Effective date captured on every change; automatic arrears in Release 16.
+Documents,HR uploads documents signed outside the system; HR-only by default; logged,Built,
+Documents,"Retention 6 years after exit, flagged for HR review, never auto-deleted",Built,Review list on the Documents screen.
+Recruitment,"Requisition: Hiring Manager > HR (salary in band, first authoriser) > MD; Finance removed",Built,
+Recruitment,HR pre-screens external applicants; internal go straight to Hiring Manager,Production build,
+Recruitment,Head of HR approves offer; only HR issues; hiring managers cannot see offers,Partly built (finish in production build),Head of HR approval exists; hiding offers from hiring managers in Release 16.
+Recruitment,Accepted offer creates record and onboarding checklist,Built,Already in place.
+Onboarding,"Contract, starter forms and induction timetable for e-signature",Production build,
+Onboarding,Induction checklist signed by employee and manager; alert at day 30,Built,
+Onboarding,"Probation objectives; month-5 decision: confirm, extend 1-3 months, release",Built,Probation extension already moves the end date on the record.
+Leave,Leave year start set by HR,Partly built (finish in production build),Setting exists; year-end reset job in Release 16.
+Leave,"Annual leave by cadre (15/20/25), pro-rated for joiners",Built; needs your decision,"Your cadres name Deputy Manager and Senior VP, which are not in the current grade ladder. Mapped for now: Executive Trainee to Assistant Manager = 20; Manager and above = 25; support staff and interns = 15. Please send the full grade list."
+Leave,Leave types with their own rules,Built,"Annual, block, sick, study/exam, compassionate, casual, maternity, paternity, unpaid."
+Leave,Weekends and public holidays excluded; HR maintains holiday calendar,Built,Exclusion in place; HR holiday editor in Release 16. HR holiday calendar added.
+Leave,Two-step approval: Line Manager then HR; escalation after 3 working days,Built,
+Leave,Annual leave plan with team calendar,Built,
+Leave,Max 10 working days per annual leave request; block leave = 10 consecutive days,Built,
+Leave,Automatic rejection with reason; balance shown before submitting,Built,
+Leave,"Mandatory evidence for study/exam, maternity, paternity, sick",Built,
+Leave,"Sick leave: 12 days full pay, then unpaid to payroll; return-to-work task",Partly built (finish in production build),Unpaid days flagged on the request; payroll input and return-to-work task in Release 16.
+Leave,Maternity entitlement by service,Built; needs your decision,"Your rule gives no maternity leave under 12 months. The Labour Act (s.54) gives 12 weeks to all, with at least 50% pay after 6 months. Built: 18+ months full pay; 12-18 months 6 weeks paid; 6-12 months 50% pay; under 6 months unpaid leave."
+Leave,Carry-over: up to 5 days only if a request was declined by the Line Manager,Built,Manager declines are now recorded; year-end calculation and report in Release 16. Year-end carry-over report built.
+Leave,Leave on exit paid out in final settlement,Built,Shown in offboarding and passed to final settlement.
+Time,Working day 08:00-17:00; late after 08:15,Built,Settings in place; clock-in screen rules in Release 16.
+Time,"Clock-in by geolocation, biometric or barcode; radius per office",Production build,
+Time,"Lateness reason, alert after 3 a month, daily manager report",Built,
+Time,Remote working requests approved by HR,Built,
+Time,Return-to-work form; four-stage sickness absence case,Built,Four-stage absence case built; return-to-work form for each absence is still to come.
+Staff loans,New module replacing the staff loan option on Cash requests,Built,
+Staff loans,Eligibility: permanent and confirmed only,Built,
+Staff loans,Limit: outstanding loans up to one third of annual gross; available limit shown,Built,
+Staff loans,"Application with purpose, term up to 24 months, other debts",Built,
+Staff loans,Monthly repayment shown before submitting,Built; needs your decision,No interest rate was given. The rate is a setting at 0% until Finance sets it.
+Staff loans,One loan at a time unless urgent with reason,Built,
+Staff loans,Route: HoD > Head of Credit Sales > Head of HR > MD/CEO > Finance release,Built; needs your decision,"Head of Credit Sales is mapped to the Head, Credit and Lending. Where that person is also the HoD, one approval covers both. Please confirm who holds the role."
+Staff loans,Employee e-signs agreement and deduction authority; guarantor verified before release,Built,
+Staff loans,Payroll deduction; balance and schedule in self-service,Built,
+Staff loans,Exit: balance deducted; shortfall to guarantor or repayment plan,Built,Offboarding shows the balance; guarantor recovery workflow in Release 16. Shortfall routed to guarantor or plan in offboarding.
+Payroll,"Mid-month 12th: 50% of gross, no deductions; month-end 24th: balance less all deductions",Built,"One payslip shows both, the first marked Mid-month payment."
+Payroll,Salary structure 25/12.5/12.5/50; pension 8%/10% on Basic+Housing+Transport,Built,
+Payroll,PAYE under the Nigeria Tax Act 2025; rent relief only after evidence verified,Built,Already in place.
+Payroll,NHF only for opted-in staff with consent date,Built,"Consistent with the Business Facilitation Act 2022, which lets private-sector staff opt out."
+Payroll,"TIN on payslip; ""TIN not provided"" and exception",Built,
+Payroll,Approval: HR review with sample > Internal Audit verifies > HR endorses > Head of Finance and Operations approves,Built; needs your decision,Head of Finance and Operations is mapped to the CFO. New Internal Audit role added.
+Payroll,Cycle 25th to 24th; inputs close on the 11th,Built,
+Payroll,Payslips emailed on pay day,Go-live control (outside the prototype),Needs the email service.
+Payroll,Corrections next month; large recoveries over up to 3 months,Partly built (finish in production build),Shortfalls flagged; spreading in Release 16.
+Payroll,Only payroll users edit; Internal Audit views every change; backup after each run,Partly built (finish in production build),Internal Audit sees changes since last month; backups are an infrastructure control.
+Payroll,"Exports: GL journal, NIBSS bank file, pension by PFA, PAYE by state",Built,"Journal, bank, pension and PAYE schedules exist; NIBSS file layout in Release 16. NIBSS-format bank files for both pay dates added."
+Benefits,Leadway Health Plus and Pro; dependants; monthly schedule per plan,Partly built (finish in production build),Plans and dependants in place; per-plan export in Release 16. Premiums are sample figures.
+Benefits,Group life 3x annual gross; beneficiary on record,Built,
+Performance,"Three review types: monthly financial, monthly supervision, quarterly appraisal",Built,Head of Treasury mapped to the CFO until confirmed.
+Performance,"Objective setting with approval, locking and versions; weekly alerts",Built,
+Performance,Justification for every rating,Built,Built in Release 13.
+Performance,Skills assessment; disagreement and dual e-sign-off,Built,
+Performance,Low rating drafts a PIP; starts when manager and HR confirm,Built,
+Performance,Attendance on the review; confidentiality,Built,
+Learning,Intern grade and conversion route; training bond,Built,Training bond period is already a setting (12 months).
+Engagement,Survey template builder; pulse anonymity 5+; Employee of the Month,Built,Anonymity threshold is a setting.
+Engagement,"Birthday automation rule with MD message, manager note, consent and weekly HR list",Built,
+Compensation,Pay review within Board pool; EXCO/MD approves; to payroll by the 11th,Built,
+Analytics,Attendance and leave reports; ISO 30414:2025 measures,Built,
+Self-service,"Loans, payslips, leave, details, signing, courses",Built,
+Notifications,Email and in-app for every request; reminders after 2 working days; status tracking,Partly built (finish in production build),In-app status in place; email needs the mail service.
+Compliance,Statutory floors enforced in settings,Built,Maternity 12 weeks and annual leave 6 days; pension minimums.
+Compliance,"NDPA: masking by role, view logs, consent, data subject requests, DPIA",Built,"Masking, logs and consents built; data subject request tracker in Release 16; DPIA before go-live. Data subject request tracker added; DPIA before go-live."
+Compliance,Explainable automation with override and audit,Partly built (finish in production build),Automatic leave rejections show the rule; override screen in Release 16.
+Compliance,Configurable approval matrix with delegates,Built,
+Compliance,Leaver access revoked at close of business; hourly alerts,Partly built (finish in production build),Access is switched off when offboarding starts; hourly alert in Release 16.
+Compliance,Microsoft 365 SSO with MFA; quarterly access review; penetration test,Go-live control (outside the prototype),
+Settings,All settings with starting values,Built,HR settings screen; geolocation radius sits with the system administrator.

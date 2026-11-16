@@ -8,10 +8,10 @@ with sync_playwright() as p:
     b=p.chromium.launch()
     for vw,mode in [((1440,900),'desktop'),((390,844),'phone')]:
         pg=b.new_page(viewport={'width':vw[0],'height':vw[1]}); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
-        pg.goto(U); pg.evaluate('localStorage.clear()'); pg.reload(); pg.wait_for_timeout(400); pg.click('#pers button[data-p="employee"]'); pg.wait_for_timeout(200)
-        roles=pg.evaluate("Array.from(document.querySelectorAll('#persona option')).map(o=>o.value)")
+        pg.goto(U); pg.evaluate('localStorage.clear()'); pg.reload(); pg.wait_for_timeout(400); pg.evaluate("__pos.as('employee')"); pg.wait_for_timeout(200)
+        roles=pg.evaluate('__pos.roles()')
         for role in roles:
-            pg.select_option('#persona',role); pg.wait_for_timeout(150)
+            pg.evaluate(f"__pos.as('{role}')"); pg.wait_for_timeout(150)
             routes=pg.evaluate("Array.from(document.querySelectorAll('#nav a, #bnav a')).map(a=>a.getAttribute('href').slice(1))")
             routes=list(dict.fromkeys(routes))
             if mode=='phone':

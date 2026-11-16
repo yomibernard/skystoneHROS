@@ -1,9 +1,9 @@
 ID,Area,Role,Test,Expected result,Result,Evidence
 T01,All,All five,Open every screen as every role,Every screen loads with no script errors,Pass,53 screens opened; 0 errors
 T02,Leave,Employee,Request 21 to 31 Dec 2026,8 working days: Christmas Day excluded; Boxing Day falls on a Saturday,Pass,"8 working days, excluding Christmas Day and Boxing Day."
-T03,Leave,Employee,Submit the request,Request goes to the line manager,Pass,Sent to Tunde Bakare for approval.
-T04,Leave,Employee,Request 3 days of block leave,Refused: block leave needs at least 10 working days,Pass,Block leave must cover at least 10 consecutive working days.
-T05,Leave,Line manager,Approve the request,Employee sees it approved; balance updates,Pass,Approved status shown to employee
+T03,Leave,Employee,Submit the request,Request goes to the line manager,Pass,"Sent to Tunde Bakare, then HR."
+T04,Leave,Employee,Request 3 days of block leave,Rejected automatically with the reason shown (designated roles only; exactly 10 working days),Pass,Rejected automatically: block leave is exactly 10 consecutive working days.
+T05,Leave,"Line manager, HR officer","Line manager approves, then HR gives second approval",Waits for HR after the manager; approved only after HR,Pass,Approved status shown to employee
 T06,Self-service,"Employee, HR officer",Request a phone number change,Change waits for HR verification before reaching the record,Pass,Appears in HR approvals
 T07,Core HR,"HR officer, Head of HR",Record a promotion as HR officer,Only the Head of HR can approve it; the officer cannot approve their own change,Pass,HR officer can approve: False; Head of HR can approve: True
 T08,Onboarding,HR officer,Grant system access before guarantor is verified,Blocked until contract signed and guarantor verified,Pass,Access checkbox disabled with reason shown
@@ -12,17 +12,57 @@ T10,Exit,HR officer,Look for the release button as HR officer,Only the Head of H
 T11,HR automation,HR officer,Run rules with a leaver past their last day,Access is revoked automatically and the red flag clears,Pass,Flag cleared
 T12,Training,Employee,"Fail, then pass, the data protection check",Fail is refused; a pass records the date and score,Pass,You answered 0 of 3 correctly. Review the lessons and try again. Then passed and recorded.
 T13,Training,"Employee, manager, HR",Request a programme place,"Manager supports first, then HR approves against budget",Pass,HR could act before manager: False; after: True
-T14,Recruitment,"Manager, Head of HR, Finance",Raise a requisition,"Head of HR approves first, then Finance confirms budget",Pass,Finance saw it only after Head of HR approval
+T14,Recruitment,"Hiring manager, HR, MD",Raise a requisition,HR assigns the salary within the band as first authoriser; the MD gives final authorisation; Finance has no step,Pass,MD saw it only after HR; Finance never
 T15,Recruitment,"HR officer, Head of HR","Prepare, approve, send and sign an offer, then hire",Offer approved by the Head of HR; signed offer creates the employee record and onboarding,Pass,Record SKF-0237 created and onboarding started.
 T15a,Recruitment,HR officer,Try to send an offer for a role needing CBN prior approval,Offer held until the CBN approval is recorded,Pass,Held before approval: True; released after: True
-T16,Payroll,"Payroll officer, Head of HR, Finance",Run the November payroll,Only the payroll officer prepares; blocked until inputs approved and exceptions reviewed; then review and release by two other people,Pass,Blocked before checks: True; out-of-turn actions: False; released: True
-T17,Payroll,Employee,Check PAYE on a payslip by hand,"Matches Nigeria Tax Act 2025 bands after pension, NHF and rent relief; pension is 8% of basic, housing and transport",Pass,"Chargeable 3,288,360; PAYE shown 31,825; recalculated 31,825"
+T16,Payroll,"Payroll officer, HR, Internal Audit, Finance",Run the November payroll,Payroll prepares; HR reviews with a sample; Internal Audit verifies; HR endorses; Head of Finance and Operations approves. No one acts out of turn,Pass,Blocked before checks: True; out-of-turn actions: False; released: True
+T17,Payroll,Employee,Check PAYE on a payslip by hand,"Matches Nigeria Tax Act 2025 bands after pension, NHF and rent relief; pension is 8% of basic, housing and transport (50% of gross)",Pass,"Chargeable 3,409,920; PAYE shown 33,649; recalculated 33,649"
 T18,Performance,Line manager,Rate someone with overdue training as Outstanding on every objective,Overall rating capped at Meets expectations,Pass,Review submitted: Meets expectations.
 T19,Documents,Employee,"Sign with a wrong name, then the right one",Wrong name refused; signature recorded in the audit history,Pass,Type your name exactly as it appears on your record: Adaeze Nwosu.
 T20,Engagement,Employee,"Submit the pulse survey, then return",Answers recorded anonymously; survey cannot be taken twice,Pass,Form no longer offered
 T21,Time and attendance,Employee,"Clock in, then out",Hours recorded for today,Pass,Day complete shown
 T22,Platform,Employee,Reload the page,Earlier requests are still there,Pass,Saved in this browser only
 T23,Platform,HR officer,Open on a 390-pixel phone screen,No sideways scrolling of the page,Pass,Page width 390px
+T27,Performance,Employee,"Submit a self-assessment without, then with, a reason for each rating",Refused until every rating is justified; then sent to the manager,Pass,Justify every rating in at least 20 characters. Missing for Financial.
+T28,Records,"Employee, HR officer",Request an address change with an optional supporting document,HR sees the request with the document attached,Pass,Document shown to HR
+T29,Memos,HR officer,"Publish a policy to all staff, with internal notes and e-signature",Published on letterhead to every member of staff,Pass,Published to 234 people.
+T30,Memos,Employee,"Open the memo, try to sign without confirming, then sign",Letterhead shown; internal notes hidden; signature needs the confirmation tick,Pass,"Notes hidden, signature recorded"
+T31,Memos,HR officer,Check who has read and signed,HR sees internal notes and read and signature counts,Pass,Tracking shown
+T32,Memos,"Managing Director, Employee",Recall a memo,Staff see the title only and cannot open it; the MD still sees it marked Recalled,Pass,Recalled
+T33,Cash requests,"Employee, Line manager","Raise a cash request with a 12-word description, then 6 words; manager approves with a note","Long description refused; request goes to the chosen manager, then Finance",Pass,Keep the description to 10 words or fewer (now 12).
+T34,Cash requests,Employee,Open your own request after the manager has noted it,The manager’s internal note is hidden from you,Pass,Note hidden
+T35,Cash requests,Finance (CFO),Look for a staff loan type on Cash requests,Removed: staff loans have their own module,Pass,Removed
+T36,Admin,System administrator,"Switch the Culture module off, then on",Hidden from every role while off; core screens cannot be switched off,Pass,Hidden and restored
+T37,Admin,System administrator,Remove “create memos” from line managers,Managers can no longer publish memos; change recorded in the audit trail,Pass,Removed and restored
+T38,Home,Employee,Open Home,"Today’s birthdays and the coming week’s, from dates of birth captured at enrolment",Pass,Shown
+T39,Joiners and leavers,"HR officer, Head of HR","Start an offboarding, complete handover, close as the named approver",Access off at start; only the named approver can close,Pass,Offboarding closed.
+T40,Performance,Employee,"Review KPIs, add an OKR, read the yardsticks","KPI scorecard shown; OKR saved; selection, appraisal and recommendation yardsticks published",Pass,All shown
+T41,Payroll,Employee,Open this month’s payslip,"Net pay shown as two halves, paid on the 15th and 25th (or the working day before), adding up to the net",Pass,"Mid-month payment: ₦168,833 on 12 Nov 2026 (paid), 50% of gross with no deductions. Month-end payment: ₦121,678 on 24 Nov 2026, the balance after all of the month’s deductions."
+T42,Payroll,Finance (CFO),Open the bank schedule,Two payment dates with amounts; first half released before the 15th,Pass,Both halves shown
+T43,Dual roles,HR officer,"Open Home, then My leave","Shows both roles (Staff and HR officer), a personal staff summary, and the personal leave screen without leaving the HR role",Pass,FA Folake Adeyemi HR Business Partner Staff HR officer
+T44,Dual roles,Head of Talent,Sign in as the Head of Talent,Talent dashboard plus own staff summary; cannot verify data changes or approve pay,Pass,Talent home shown
+T45,Learning,Employee,Watch the video to the end; read the PDF,Both recorded as complete on the learning record,Pass,Video and PDF completed
+T46,Learning,Head of Talent,Publish a written lesson to the library,Published to all staff,Pass,Published to 233 people.
+T47,Settings,HR officer,"Set maternity to 10 weeks, then annual leave to 5 days, then a valid change",Values below the legal floor are refused with the reason; valid changes save and are logged,Pass,"Maternity leave cannot be less than 12 weeks (Labour Act, section 54). | Annual leave cannot be set below 6 working days (Labour Act, section 18)."
+T48,Payroll,Employee,Read the payslip payment lines,Mid-month payment on the 12th is 50% of gross with no deductions; month-end on the 24th carries all deductions; TIN in the header,Pass,"Mid-month payment: ₦168,833 on 12 Nov 2026 (paid), 50% of gross with no deductions. Month-end payment: ₦121,678 on 24 Nov 2026, the balance after all "
+T49,Staff loans,"Employee, HoD, Head of Credit Sales, Head of HR, MD, Finance","Apply above the one-third limit, then within it; take it through every approval","Over-limit refused; HoD and Credit Sales, Head of HR, MD approve; employee signs; Finance confirms budget and guarantor; balance and schedule shown",Pass,"That is more than your available limit of ₦1,350,666."
+T50,Leave,Employee,Request 12 days of annual leave; then sick leave without a certificate,"Both refused before submission, with the reason",Pass,"Rejected automatically: that is 12 working days, but your annual leave balance is 6. | Attach the medical certificate before you submit."
+T51,Records,Employee,Request a surname change without evidence,Refused: evidence is mandatory for name changes,Pass,Attach evidence for a surname change. The request cannot be sent without it.
+T52,Records,HR officer,Approve a bank change before and after recording the call-back,Blocked until the call-back is recorded; the change applies from the right payroll month,Pass,Record the call-back before approving a bank change.
+T53,Data protection,"Employee, HR officer",Look at NIN and ID numbers,"Masked to the last four digits for staff; HR can reveal, and every reveal is logged",Pass,Masked for staff; reveal logged for HR
+T54,Benefits,Employee,Open Benefits,Leadway Health plan and group life cover of 3 times annual gross,Pass,Shown
+T55,Reviews,"Employee, Line manager",Submit objectives; manager approves,Objectives lock after approval; only HR can reopen; versions kept,Pass,Locked
+T56,Reviews,"Employee, Line manager",Quarterly appraisal rated Partly meets,Justification required; low rating drafts an improvement plan; disagreement recorded; both sign,Pass,PIP drafted and both signed
+T57,Probation,Line manager,"Extend probation by 5 months, then 2",Extension limited to 1 to 3 months; decision goes to HR,Pass,Checked
+T58,Attendance,Line manager,Open the daily report,"Late and absent staff today, reasons to record, lateness alerts over 3 a month",Pass,Shown
+T59,Attendance,"Employee, HR officer",Request a remote working day,Goes to HR to approve,Pass,Waiting for HR
+T60,Leave,"HR officer, Employee",Declare a short-notice holiday,Leave day counts exclude it at once,Pass,"2 working days, excluding Special holiday."
+T61,Controls,"HR officer, Head of HR",Change an escalation period,HR proposes; the Head of HR approves; logged,Pass,Approved and in force.
+T62,Engagement and analytics,HR officer,Open Engagement and People analytics,"Employee of the Month, survey templates, ISO 30414 measures and attendance reports",Pass,Shown
+T63,Sign-in,Any user,Open People OS for the first time,No list of people to pick from; work email and Microsoft 365 with multi-factor approval only; personal or unknown addresses refused,Pass,Live sign-in only
+T64,Sign-in,Head of HR,Sign in as Doyin Elegbe,Signed in as herself; can switch only between roles she holds,Pass,Roles available: ['hoh']
+T65,Sign-in,Employee,Sign in as a member of staff and try to open the admin console,Staff role only; admin console not reachable,Pass,Blocked
+T66,User accounts,"System administrator, Head of HR",Check day-one provisioning; import a staff list with one bad row,Day-one import recorded; bad rows rejected with reasons; Head of HR approves before accounts are created,Pass,Validated and approved
 T24,AI,Any,Ask HR a question,Answer drawn from policy and own data,Manual,Not testable outside Claude: test by hand in the app
 T25,Integrations,HR officer,"Connect Teams, identity, ledger, NIBSS",Live connections,Not in scope,Simulated in the prototype; for the production build
 T26,All,All,Script errors during the whole test run,None,Pass,0 errors
