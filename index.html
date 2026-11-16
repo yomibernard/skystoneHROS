@@ -184,13 +184,13 @@ tbody tr.click:hover td{background:var(--canvas)}
   .nav{flex-direction:row;overflow-x:auto;padding:8px}
   .nav a{white-space:nowrap}
   .nav a[aria-current="page"]::before{left:10px;right:10px;top:auto;bottom:2px;height:3px;width:auto}
-  .persona{display:flex;gap:10px;align-items:center;padding:8px 16px 10px;margin-top:0}
-  .persona select{width:auto;flex:1;min-width:0}
-  .side{min-width:0}
-  .persona label{margin:0;white-space:nowrap}
-  .persona .who,.reset{display:none}
+  .side{display:flex;flex-direction:row;align-items:center;min-width:0}
+  .brand{flex:1;min-width:0;padding:8px 12px}
+  .persona{display:flex;gap:8px;align-items:center;padding:8px 12px;margin-top:0}
+  .persona select,.persona label,.persona .who,#reset{display:none}
+  #signout{display:inline-block;padding:8px 12px;min-height:40px}
   main{padding:0 16px 40px}
-  .notice{margin:0 -16px;padding:8px 16px}
+  .notice{margin:0 -16px;padding:6px 16px;font-size:13px}
   .band{grid-template-columns:1fr 1fr}
   .band > div:nth-child(3){border-left:0}
   .band > div:nth-child(n+3){border-top:1px solid var(--line)}
@@ -320,7 +320,8 @@ a.btn{color:var(--ink)}a.btn.primary{color:var(--on-red)}
   #signin .brandside{height:220px;padding:24px}
   #signin .brandside p{display:none}
   #signin .card{margin:0 12px 24px}
-  .top.hero{background-size:auto 100%;background-position:right -160px center;padding:22px}
+  .top.hero{background-size:auto 100%;background-position:right -160px center;padding:12px 14px;margin-top:8px;margin-bottom:10px}
+  .top.hero h1{font-size:22px;line-height:1.15;margin:0}
   .top.hero > div:first-child{max-width:100%}
   .topbar{display:none}
 }
@@ -361,7 +362,7 @@ a.btn{color:var(--ink)}a.btn.primary{color:var(--on-red)}
 @media (max-width:900px){
  .nav{display:none !important}
  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
- .bnav a,.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;background:none;border:0;position:relative;padding:4px 0;cursor:pointer}
+ .bnav a,.bnav button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;background:none;border:0;position:relative;padding:4px 1px;cursor:pointer}
  .bnav img{width:22px;height:22px}
  .bnav a[aria-current="page"]{color:var(--red)}
  .bnav i{position:absolute;top:0;left:55%;font-style:normal;min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 4px}
@@ -382,9 +383,13 @@ a.btn{color:var(--ink)}a.btn.primary{color:var(--on-red)}
  .tablewrap table:not(.matrix):not(.ts) tr{display:block;padding:10px 4px;border-bottom:1px solid var(--line)}
  .tablewrap table:not(.matrix):not(.ts) td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;padding:3px 4px;text-align:right}
  .tablewrap table:not(.matrix):not(.ts) td:first-child{display:block;text-align:left;font-size:16px}
- .tablewrap table:not(.matrix):not(.ts) td[data-label]::before{content:attr(data-label);color:var(--muted);font-size:13px;text-align:left;flex:none;max-width:45%}
+ .tablewrap table:not(.matrix):not(.ts) td[data-label]::before{content:attr(data-label);color:var(--muted);font-size:12px;font-weight:600;text-align:left;flex:none;max-width:46%}
  .tablewrap table:not(.matrix):not(.ts) td .actions{justify-content:flex-end}
  .tablewrap{border:0;background:transparent}
+ .tablewrap table.cards:not(.matrix):not(.ts) tr{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding:6px 2px 8px}
+ .tablewrap table.cards:not(.matrix):not(.ts) td{display:block;text-align:left;padding:0;font-size:13px;line-height:1.25}
+ .tablewrap table.cards:not(.matrix):not(.ts) td:first-child{grid-column:1 / -1;display:block;font-size:15px;padding-bottom:0}
+ .tablewrap table.cards:not(.matrix):not(.ts) td[data-label]::before{content:attr(data-label) ": ";display:inline;max-width:none;margin-right:0;font-size:12px;font-weight:600;letter-spacing:0;text-transform:none}
 }
 
 .brand{background:#1D2026}
@@ -474,7 +479,7 @@ details > summary{list-style:none;display:inline-flex;cursor:pointer}details > s
 .rchip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--canvas);color:var(--muted);margin:2px 2px 2px 0}.rchip.priv{background:var(--red-tint);color:var(--red-deep)}.rchip.temp{background:var(--warn-tint);color:var(--warn)}
 .actbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-right:auto}
 .pm{font-size:13px}.pm th{white-space:normal;min-width:84px}.pm td{text-align:center}.pm td:first-child{text-align:left;min-width:200px}.pm td.pw{background:var(--red-tint);color:var(--red-deep);font-weight:600}.pm td.pv{background:var(--canvas)}.pm td.pn{color:var(--muted)}
-@media (max-width:900px){.topbar{display:flex!important}.topbar .bell,.topbar .avatar,.topbar .search{display:none}}
+@media (max-width:900px){.topbar{display:flex!important;flex-wrap:wrap;padding:8px 0 0}.topbar .bell,.topbar .avatar{display:none}.topbar .search{display:block;flex:1 1 100%}.tools{flex-direction:row;flex-wrap:wrap}.tools input{flex:1 1 100%;width:100%}.tools select{flex:1 1 calc(50% - 6px);width:calc(50% - 6px);min-width:0;max-width:calc(50% - 6px)}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
@@ -811,7 +816,7 @@ function render(keep){aclSweep();renderNav();renderTopbar();var r=route();view.i
   if(r==='home'&&S.role!=='finance'){var t0=view.querySelector('.top');if(t0)t0.classList.add('hero');}
   if(r==='engagement')view.insertAdjacentHTML('afterbegin',photoBanner('ph_team','Your voice shapes Skystone','Take the pulse, recognise a colleague, and see what we are doing about it.'));
   if(r==='recruitment')view.insertAdjacentHTML('afterbegin',photoBanner('ph_market','People who serve Nigerian businesses well','Every hire starts from an approved position and ends with a smooth first day.'));
-  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);adminHook(r);hohHook(r);recruitHook(r);mdHook(r);r11Hook(r);r13Hook(r);r14Hook(r);r15Hook(r);r16Hook(r);r17Hook(r);if(r==='trust')trustDl();if(!keep)window.scrollTo(0,0);}
+  bandIcons();uxAfterRender(r);bind(r);personalise(r);trustHook(r);adminHook(r);hohHook(r);recruitHook(r);mdHook(r);r11Hook(r);r13Hook(r);r14Hook(r);r15Hook(r);r16Hook(r);r17Hook(r);if(r==='trust')trustDl();labelTables();if(!keep)window.scrollTo(0,0);}
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove('show');},2600);}
 function top(title,sub,extra){return '<div class="top"><div><h1>'+title+'</h1>'+(sub?'<p class="sub">'+sub+'</p>':'')+'</div>'+(extra||'')+'</div>';}
 function tag(text,kind){return '<span class="tag '+(kind||'plain')+'">'+esc(text)+'</span>';}
@@ -938,7 +943,7 @@ VIEWS.people=function(){
   '<div class="tools"><input id="q" type="search" placeholder="Search by name, ID or role" aria-label="Search people">'+
   (mgr?'':'<select id="fd" aria-label="Department"><option value="">All departments</option>'+DEPTS.map(function(d){return '<option value="'+d.code+'">'+esc(d.name)+'</option>';}).join('')+'</select>')+
   '<select id="fs" aria-label="Filter"><option value="">Everyone</option><option value="prob">On probation</option><option value="unver">Checks outstanding</option><option value="block">Block leave outstanding</option></select></div>'+
-  '<div class="tablewrap"><table><thead><tr><th>Name</th><th>Role</th>'+(mgr?'':'<th>Department</th>')+'<th>Location</th><th>Grade</th><th>Status</th><th>Checks</th></tr></thead><tbody id="rows"></tbody></table><div class="more" id="pmore"></div></div>';
+  '<div class="tablewrap"><table class="cards"><thead><tr><th>Name</th><th>Role</th>'+(mgr?'':'<th>Department</th>')+'<th>Location</th><th>Grade</th><th>Status</th><th>Checks</th></tr></thead><tbody id="rows"></tbody></table><div class="more" id="pmore"></div></div>';
 };
 function peopleRows(){if(!document.getElementById('q')||!document.getElementById('fs'))return;
   var q=(document.getElementById('q').value||'').toLowerCase(),fd=document.getElementById('fd'),fs=document.getElementById('fs').value;
@@ -953,6 +958,7 @@ function peopleRows(){if(!document.getElementById('q')||!document.getElementById
   document.getElementById('rows').innerHTML=shown.map(function(e){var v=verifiedCount(e);
     return '<tr class="click" tabindex="0" data-emp="'+e.id+'"><td><div style="font-weight:600">'+esc(full(e))+'</div><div class="idn">'+e.id+'</div></td><td>'+esc(e.title)+'</td>'+(S.role==='manager'?'':'<td>'+esc(dept(e.dept).name)+'</td>')+'<td>'+esc(e.branch)+'</td><td>'+esc(GRADES[e.grade])+'</td><td>'+(onProbation(e)?tag('Probation','warn'):tag('Confirmed','good'))+'</td><td>'+(v===4?tag('4 of 4','good'):tag(v+' of 4','warn'))+'</td></tr>';}).join('')||'<tr><td colspan="7">No one matches. Try a different name or clear the filters.</td></tr>';
   document.getElementById('pmore').textContent=list.length>60?'Showing 60 of '+list.length+'. Refine the search to narrow the list.':plural(list.length,'person','people');
+  labelTables();
 }
 
 VIEWS.organisation=function(){
@@ -1993,11 +1999,11 @@ var BNAV = { employee: [['home', 'Home', 'i_home'], ['leave', 'Leave', 'i_calend
   hr: [['home', 'Home', 'i_home'], ['approvals', 'Approve', 'i_clipboard'], ['people', 'People', 'i_people'], ['payroll', 'Payroll', 'i_wallet']],
   finance: [['home', 'Home', 'i_home'], ['approvals', 'Approve', 'i_clipboard'], ['payroll', 'Payroll', 'i_wallet'], ['planning', 'Planning', 'i_chart']] };
 BNAV.hoh = BNAV.hr;
-function renderBnav() { var r = route(), q = myQueue().length, items = BNAV[S.role], more = S.role !== 'employee';
-  document.getElementById('bnav').innerHTML = items.map(function (x) { return '<a href="#' + x[0] + '"' + (x[0] === r ? ' aria-current="page"' : '') + '><img class="ic-img" src="' + IMG[x[2]] + '" alt=""><span>' + x[1] + '</span>' + (x[0] === 'approvals' && q ? '<i>' + q + '</i>' : '') + '</a>'; }).join('') + (more ? '<button type="button" id="bmore"><span class="dots" aria-hidden="true">•••</span><span>More</span></button>' : '');
+function renderBnav() { var r = route(), q = myQueue().length, items = BNAV[S.role] || [['home', 'Home', 'i_home'], ['profile', 'Me', 'i_recruit']];
+  document.getElementById('bnav').innerHTML = items.map(function (x) { return '<a href="#' + x[0] + '"' + (x[0] === r ? ' aria-current="page"' : '') + '><img class="ic-img" src="' + IMG[x[2]] + '" alt=""><span>' + x[1] + '</span>' + (x[0] === 'approvals' && q ? '<i>' + q + '</i>' : '') + '</a>'; }).join('') + '<button type="button" id="bmore"><span class="dots" aria-hidden="true">•••</span><span>More</span></button>';
   var b = document.getElementById('bmore'); if (b) b.onclick = openMore; }
 function openMore() { var el = document.getElementById('more');
-  el.innerHTML = '<div class="sheet"><div class="sheet-h"><h2>All screens</h2><button class="close" id="mclose" type="button" aria-label="Close">×</button></div>' + NAVG[S.role].map(function (g) { return (g[0] ? '<div class="navh" style="display:block">' + g[0] + '</div>' : '') + '<div class="mgrid">' + g[1].map(function (x) { return '<a href="#' + x[0] + '">' + navIcon(x[0]) + '<span>' + x[1] + '</span></a>'; }).join('') + '</div>'; }).join('') + '</div>';
+  el.innerHTML = '<div class="sheet"><div class="sheet-h"><h2>All screens</h2><button class="close" id="mclose" type="button" aria-label="Close">×</button></div>' + (NAVG[S.role] || []).map(function (g) { var items = g[1].filter(function (x) { return routeOK(x[0]); }); if (!items.length) return ''; return (g[0] ? '<div class="navh" style="display:block">' + g[0] + '</div>' : '') + '<div class="mgrid">' + items.map(function (x) { return '<a href="#' + x[0] + '">' + navIcon(x[0]) + '<span>' + x[1] + '</span></a>'; }).join('') + '</div>'; }).join('') + '</div>';
   el.classList.add('open'); el.querySelectorAll('a').forEach(function (a) { a.onclick = function () { el.classList.remove('open'); }; });
   document.getElementById('mclose').onclick = function () { el.classList.remove('open'); }; el.onclick = function (ev) { if (ev.target === el) el.classList.remove('open'); }; }
 function labelTables() { document.querySelectorAll('#view table, #drawer table').forEach(function (t) { if (t.classList.contains('matrix') || t.classList.contains('ts')) return; var th = t.querySelectorAll('thead th'); if (!th.length) { t.classList.add('nohead'); return; }
