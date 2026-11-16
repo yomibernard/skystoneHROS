@@ -1,5 +1,13 @@
 # Changelog
 
+## Release 18: Skystone imagery
+- Home banners for every role (employee, line manager, HR, Head of HR, Head of Talent, payroll and finance, MD, administrator), fitted so faces are never cropped; on phones the picture sits above the greeting.
+- Sign-in background (Skystone building at dusk), team photograph on the Culture page, Goals and development banner.
+- New illustrations for empty screens (all clear, no memos, no loan, learning complete, nothing to show).
+- Learning library thumbnails for data protection, credit, anti-money laundering and customer writing.
+- Birthday banner, Employee of the Month card on the Culture page, and a new certificate design with the Skystone seal.
+- Images are embedded and compressed (about 1.2 MB in total), so the app still works as a single file.
+
 ## Release 17.1: Layout fix
 - Fixed: figures in summary cards (for example "Your loan") overlapped on laptop-width screens. Cards now resize to fit; amounts of a billion naira or more show as "bn".
 - New test: tests/overflow_check.py looks for text spilling out of its box on every screen, for every role, at laptop, small-laptop and phone widths.
